@@ -1,0 +1,165 @@
+/* =======================================================
+   LÓGICA DA PÁGINA DE AGENDAMENTO (API MySQL)
+   - Busca o produto pelo ID direto do servidor Node.js
+   - Escolha de quantidade com trava de estoque real
+======================================================= */
+
+let produtoAtual = null; 
+let quantidade = 1;      
+let precoVigente = 0; // Guardaremos o preço real (oferta ou normal) aqui
+
+// 1. Pegar o ID do produto pela URL
+const urlParams = new URLSearchParams(window.location.search);
+const idProduto = urlParams.get("id");
+
+// 2. Busca o Produto na API
+async function buscarProduto(id) {
+    if (!id) return null;
+    
+    try {
+        // Puxa a lista do banco de dados
+        const resposta = await fetch('/api/produtos');
+        const produtos = await resposta.json();
+        
+        // Encontra exatamente o produto que tem o codigo_produto igual ao ID da URL
+        return produtos.find(p => p.codigo_produto == id);
+    } catch (error) {
+        console.error("Erro ao buscar produto no banco de dados:", error);
+        return null;
+    }
+}
+
+// 3. Renderizar a Tela
+async function carregarTela() {
+    produtoAtual = await buscarProduto(idProduto);
+
+    if (!produtoAtual) {
+        document.getElementById('tituloproduto').innerText = "Produto não encontrado.";
+        return;
+    }
+
+    // Atualiza Textos
+    document.getElementById('tituloproduto').innerText = produtoAtual.nome;
+    
+    const nomeSetor = produtoAtual.nome_setor ? produtoAtual.nome_setor.charAt(0).toUpperCase() + produtoAtual.nome_setor.slice(1) : 'Sem Setor';
+    document.getElementById('descricao').innerText = `Excelente escolha da nossa categoria de ${nomeSetor}. Produto fresco preparado especialmente para você!`;
+    
+    // Define o preço vigente (se tiver oferta, usa ela; senão, usa o normal)
+    const precoNormal = parseFloat(produtoAtual.valor);
+    const precoOferta = produtoAtual.preco_oferta ? parseFloat(produtoAtual.preco_oferta) : null;
+    precoVigente = precoOferta !== null ? precoOferta : precoNormal;
+
+    atualizarPrecoTotal();
+
+    // VALIDAÇÃO DE ESTOQUE
+    if (produtoAtual.quantidade_estoque <= 0) {
+        const btnAdicionar = document.getElementById("btn-adicionar-carrinho");
+        if (btnAdicionar) {
+            btnAdicionar.disabled = true;
+            btnAdicionar.innerText = "Esgotado";
+            btnAdicionar.style.backgroundColor = "#cccccc"; 
+            btnAdicionar.style.cursor = "not-allowed";
+        }
+        quantidade = 0;
+        document.getElementById('Qtd').innerText = 0;
+    }
+
+    // LÓGICA DE IMAGEM (Base64 vindo do MySQL)
+    const imgPrincipal = document.getElementById('produtoimagem');
+    const containerMiniaturas = document.getElementById('container-miniaturas');
+    
+    let imagemSrc = produtoAtual.imagem_base64 || "./Imagens/Logo.png";
+
+    if (imgPrincipal) imgPrincipal.src = imagemSrc;
+    
+    // Como o MySQL agora manda 1 foto por produto, limpamos as miniaturas extras
+    if(containerMiniaturas) {
+        containerMiniaturas.innerHTML = '';
+        const imgMini = document.createElement('img');
+        imgMini.src = imagemSrc;
+        imgMini.alt = "Miniatura do produto";
+        imgMini.style.width = '70px';
+        imgMini.style.height = '70px';
+        imgMini.style.objectFit = 'cover';
+        imgMini.style.borderRadius = '8px';
+        imgMini.style.border = '2px solid var(--dourado-suave)'; // Já deixa selecionado
+        containerMiniaturas.appendChild(imgMini);
+    }
+}
+
+// 4. Controles de Quantidade
+function atualizarPrecoTotal() {
+    if (quantidade === 0) {
+        document.getElementById('preço-final').innerText = "R$ 0,00";
+        return;
+    }
+
+    const total = precoVigente * quantidade;
+    document.getElementById('preço-final').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('Qtd').innerText = quantidade;
+}
+
+document.getElementById('plus-btn').addEventListener('click', () => {
+    const estoqueDisponivel = produtoAtual.quantidade_estoque;
+
+    if (quantidade < estoqueDisponivel) {
+        quantidade++;
+        atualizarPrecoTotal();
+    } else {
+        if(typeof mostrarToast === "function") {
+            mostrarToast(`Temos apenas ${estoqueDisponivel} unidades disponíveis no momento.`);
+        } else {
+            alert(`Temos apenas ${estoqueDisponivel} unidades disponíveis no momento.`);
+        }
+    }
+});
+
+document.getElementById('ret-btn').addEventListener('click', () => {
+    if (quantidade > 1) {
+        quantidade--;
+        atualizarPrecoTotal();
+    }
+});
+
+// 5. BOTÃO ADICIONAR AO CARRINHO
+const btnAdicionar = document.getElementById("btn-adicionar-carrinho");
+
+btnAdicionar.addEventListener("click", () => {
+    const nomeClienteLogado = localStorage.getItem("usuarioLogado");
+
+    if (!nomeClienteLogado) {
+        mostrarToast("Por favor, faça login para adicionar itens ao carrinho!");
+        return;
+    }
+
+    if (!produtoAtual) {
+        mostrarToast("Erro: produto não carregado.");
+        return;
+    }
+
+    if (quantidade > produtoAtual.quantidade_estoque) {
+        mostrarToast(`Erro: Você selecionou mais itens do que temos em estoque!`);
+        return;
+    }
+
+    const itemParaCarrinho = {
+        id: produtoAtual.codigo_produto,
+        nome: produtoAtual.nome,
+        preco: precoVigente,
+        quantidade: quantidade,
+        quantidade_estoque_real: produtoAtual.quantidade_estoque, 
+        dataRetirada: null,  
+        horaRetirada: null   
+    };
+
+    let carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
+    carrinhoAtual.push(itemParaCarrinho);
+    localStorage.setItem('carrinho', JSON.stringify(carrinhoAtual));
+
+    mostrarToast(`✅ ${produtoAtual.nome} adicionado! Agende a retirada no carrinho.`);
+
+    if(typeof abrirCarrinho === "function") abrirCarrinho(); 
+});
+
+// Inicializa a tela ao carregar
+document.addEventListener("DOMContentLoaded", carregarTela);

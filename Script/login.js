@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirecionamento inteligente baseado no cargo do banco de dados
                     setTimeout(() => { 
                         if (dados.tipo_usuario === 'funcionario') {
-                            window.location.href = 'Admin/HTML/index-admin.html'; // Vai pro Painel
+                            window.location.href = 'Admin/Html/index-admin.html'; // Vai pro Painel
                         } else {
                             window.location.href = 'padaria-landinpage.html'; // Vai pra Loja
                         }
@@ -92,7 +92,7 @@ document.getElementById('link-admin-seguro').addEventListener('click', function(
 
     if (estaLogado === 'true' && tipoUsuario === 'funcionario') {
         // Se já está logado e é funcionário, libera a entrada
-        window.location.href = 'Admin/HTML/index-admin.html';
+        window.location.href = 'Admin/Html/index-admin.html';
     } else {
         // Se não é, avisa e mantém na tela de login
         alert('Acesso Restrito: Apenas colaboradores autorizados podem acessar esta área. Faça login com suas credenciais de funcionário.');

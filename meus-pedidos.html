@@ -10,15 +10,18 @@
     <link rel="stylesheet" href="CSS/meus-pedidos.css">
 </head>
 <body>
-    <header class="header">
+    <!-- ACESSIBILIDADE WCAG: Atalho para pular direto ao conteúdo principal -->
+    <a href="#conteudo-pedidos" class="skip-link sr-only">Pular para o histórico de pedidos</a>
+
+    <header class="header" role="banner">
         <section>
             <div class="logo-e-marca">
-                <div class="marca"><h1>Padaria Diniz</h1></div>
-                <div class="logo"><a href="padaria-landinpage.html" class="logo img"><img src="./Imagens/Logo.png" alt="Logo"></a></div>
+                <div class="marca"><a href="padaria-landinpage.html">Padaria Diniz</a></div>
+                <div class="logo"><a href="padaria-landinpage.html" class="logo img" aria-label="Ir para a página inicial da Padaria Diniz"><img src="./Imagens/Logo.png" alt="Logotipo da Padaria Diniz"></a></div>
             </div>
-            <nav class="menu-principal">
-                <button id="btn-tema" onclick="alternarTema()">🌙</button>
-                <button id="btn-carrinho" onclick="abrirCarrinho()">🛒(<span id="contador-carrinho">0</span>)</button>
+            <nav class="menu-principal" aria-label="Navegação principal">
+                <button id="btn-tema" onclick="alternarTema()" aria-label="Alternar tema claro e escuro">🌙</button>
+                <button id="btn-carrinho" onclick="abrirCarrinho()" aria-label="Abrir carrinho de compras: 0 itens adicionados">🛒(<span id="contador-carrinho">0</span>)</button>
 
                 <a href="meus-pedidos.html">Códigos</a>
                 <a href="pagina-produtos.html">Meus pedidos</a>

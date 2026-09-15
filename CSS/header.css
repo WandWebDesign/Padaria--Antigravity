@@ -5,12 +5,12 @@
 
 :root {
     /* Paleta Elegante */
-    --cafe-escuro: #4A3B32;    
-    --cafe-claro: #6D5445;     
-    --dourado-suave: #D4AF37;  
-    --creme-fundo: #FFF9F0;    
+    --cafe-escuro: #4A3B32;
+    --cafe-claro: #6D5445;
+    --dourado-suave: #D4AF37;
+    --creme-fundo: #FFF9F0;
     --branco: #FFFFFF;
-    
+
     /* Configurações de Layout */
     --header-height: 80px;
     --borderadius: 12px;
@@ -23,7 +23,8 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Garante que paddings não quebrem o tamanho das caixas */
+    box-sizing: border-box;
+    /* Garante que paddings não quebrem o tamanho das caixas */
     text-decoration: none;
 }
 
@@ -61,7 +62,7 @@
     z-index: 99999 !important;
     font-weight: bold !important;
     border: 2px solid var(--dourado-suave) !important;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.3) !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3) !important;
 }
 
 html {
@@ -72,7 +73,8 @@ body {
     font-family: 'Nunito', sans-serif;
     background-color: var(--branco);
     color: var(--branco);
-    padding-top: var(--header-height); /* Espaço para não esconder o topo do site */
+    padding-top: var(--header-height);
+    /* Espaço para não esconder o topo do site */
     margin: 0;
 }
 
@@ -87,7 +89,8 @@ body {
     z-index: 100;
     background-color: var(--branco);
     height: var(--header-height);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); /* Sombra super leve e difusa */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    /* Sombra super leve e difusa */
     transition: var(--transicao);
 }
 
@@ -140,7 +143,8 @@ body {
     flex-grow: 1;
     max-width: 400px;
     margin-right: 1rem;
-    position: relative; /* CRUCIAL: Mantém o menu suspenso preso à barra */
+    position: relative;
+    /* CRUCIAL: Mantém o menu suspenso preso à barra */
 }
 
 #input-busca {
@@ -166,17 +170,19 @@ body {
 ======================================================= */
 .busca-dropdown {
     position: absolute;
-    top: 110%; /* Fica logo abaixo do input */
+    top: 110%;
+    /* Fica logo abaixo do input */
     left: 0;
     width: 100%;
     background: var(--branco);
     border-radius: 16px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     max-height: 350px;
     overflow-y: auto;
     z-index: 1000;
-    display: none; /* Escondido por padrão */
-    border: 1px solid rgba(0,0,0,0.05);
+    display: none;
+    /* Escondido por padrão */
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 /* Estilo de cada produto na lista */
@@ -187,7 +193,7 @@ body {
     padding: 12px 20px;
     cursor: pointer;
     transition: background 0.2s ease;
-    border-bottom: 1px solid rgba(0,0,0,0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .item-busca:hover {
@@ -199,7 +205,7 @@ body {
     height: 45px;
     object-fit: cover;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .item-busca-info h4 {
@@ -214,8 +220,16 @@ body {
     font-weight: 700;
 }
 
-.tag-agendavel { color: #4CAF50; } /* Verde para agendável */
-.tag-loja { color: #A89F98; } /* Cinza para itens normais */
+.tag-agendavel {
+    color: #4CAF50;
+}
+
+/* Verde para agendável */
+.tag-loja {
+    color: #A89F98;
+}
+
+/* Cinza para itens normais */
 
 /* Links do Menu (Meus Pedidos, Login) */
 .menu-principal a {
@@ -249,7 +263,8 @@ body {
 }
 
 /* Botões do Menu (Carrinho e Tema) */
-#btn-tema, #btn-carrinho {
+#btn-tema,
+#btn-carrinho {
     font-family: 'Nunito', sans-serif;
     background: transparent;
     color: var(--cafe-escuro);
@@ -271,13 +286,14 @@ body {
 ======================================================= */
 .menu-categorias {
     background-color: var(--creme-fundo);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     position: sticky;
     top: var(--header-height);
-    z-index: 98; /* Fica abaixo do z-index 100 do header principal */
+    z-index: 98;
+    /* Fica abaixo do z-index 100 do header principal */
     width: 100%;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
-    
+
     /* ADICIONADO: Tempo da animação para quando ele esconder/aparecer */
     transition: transform 0.4s cubic-bezier(0.3, 1, 0.3, 1);
 }
@@ -291,10 +307,10 @@ body {
 .escolhas {
     list-style-type: none;
     display: flex;
-    
+
     /* ALTERADO: De flex-start para center */
-    justify-content: center; 
-    
+    justify-content: center;
+
     align-items: center;
     overflow-x: auto;
     scrollbar-width: none;
@@ -329,7 +345,8 @@ body {
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    box-shadow: 0 4px 10px rgba(74, 59, 50, 0.08); /* Sombra suave de café */
+    box-shadow: 0 4px 10px rgba(74, 59, 50, 0.08);
+    /* Sombra suave de café */
     transition: var(--transicao);
     object-fit: contain;
 }
@@ -341,7 +358,8 @@ body {
 
 .escolhas a:hover img {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2); /* Sombra dourada */
+    box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2);
+    /* Sombra dourada */
 }
 
 .escolhas p {
@@ -350,91 +368,135 @@ body {
 }
 
 /* =======================================================
-   RESPONSIVIDADE (Tablets e Celulares)
+   RESPONSIVIDADE UNIFICADA (Tablets e Celulares)
 ======================================================= */
 @media (max-width: 900px) {
-    .marca h1 {
-        display: none; /* Esconde o texto da marca para dar espaço à barra de busca em telas médias */
+    .marca a {
+        font-size: 2rem;
     }
 }
 
 @media (max-width: 768px) {
-    .header {
-        height: auto;
-        padding: 10px 0;
-        position: relative; /* Deixa rolar com a tela no mobile para ganhar espaço */
+    /* Evita vazamento horizontal da página */
+    html, body {
+        overflow-x: hidden;
     }
 
     body {
         padding-top: 0;
     }
 
+    /* Cabeçalho compacto que rola com o fluxo */
+    .header {
+        position: relative;
+        height: auto;
+        padding: 12px 0 10px 0;
+    }
+
     .header section {
         flex-direction: column;
-        gap: 15px;
-        padding: 10px 1rem;
+        align-items: stretch;
+        gap: 12px;
+        padding: 0 15px;
     }
 
-    .menu-principal {
-        width: 100%;
-        flex-wrap: wrap;
+    /* Topo do Cabeçalho: Logo e Marca */
+    .logo-e-marca {
         justify-content: center;
-        gap: 15px;
+        gap: 10px;
     }
 
-    .busca-container {
-        max-width: 100%;
-        margin-right: 0;
-        order: 3; /* Joga a pesquisa para baixo dos botões no celular */
-    }
-
-    .menu-categorias {
-        top: 0;
-    }
-
-    .escolhas {
-        padding: 10px 1rem;
-    }
-
-    .escolhas img {
-        width: 45px;
-        height: 45px;
-        padding: 8px;
-    }
-
-    .escolhas p {
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 768px) {
-    .escolhas {
-        /* No telemóvel, voltamos ao flex-start para permitir rolar a lista lateralmente sem cortar os itens da esquerda */
-        justify-content: flex-start;
-    }
-}
-
-@media (max-width: 768px) {
-    /* Cabeçalho mais compacto */
     .logo img {
-        height: 40px;
+        height: 38px;
     }
 
-    .marca h1 {
+    .marca a {
         font-size: 1.8rem;
     }
 
-    /* Ícones do menu de categorias menores */
+    /* Menu de Ações e Links */
+    .menu-principal {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .menu-principal a {
+        font-size: 0.9rem;
+        padding: 6px 10px;
+    }
+
+    /* Barra de Busca em linha própria de destaque */
+    .busca-container {
+        width: 100%;
+        max-width: 100%;
+        margin: 5px 0 0 0;
+        order: 10; /* Sempre no final do bloco do menu */
+    }
+
+    #input-busca {
+        height: 44px;
+        font-size: 0.95rem;
+    }
+
+    .busca-dropdown {
+        max-height: 280px;
+        border-radius: 12px;
+    }
+
+    /* Botões Carrinho e Tema com área de toque mínima acessível */
+    #btn-tema, #btn-carrinho {
+        min-height: 44px;
+        padding: 6px 12px;
+        font-size: 1rem;
+    }
+
+    /* Menu de Categorias com rolagem lateral por toque suave */
+    .menu-categorias {
+        position: sticky;
+        top: 0;
+        z-index: 99;
+    }
+
+    .escolhas {
+        justify-content: flex-start;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        padding: 10px 15px;
+        gap: 12px;
+    }
+
+    .escolhas li {
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+
     .escolhas img {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
+        padding: 6px;
     }
 
     .escolhas p {
-        font-size: 0.8rem;
+        font-size: 0.78rem;
     }
-    
-    .busca-container {
-        margin-top: 5px;
+}
+
+@media (max-width: 480px) {
+    .menu-principal {
+        gap: 8px;
+    }
+
+    .menu-principal a {
+        font-size: 0.82rem;
+        padding: 5px 8px;
+    }
+
+    .marca a {
+        font-size: 1.6rem;
     }
 }

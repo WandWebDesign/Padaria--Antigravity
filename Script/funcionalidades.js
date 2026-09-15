@@ -80,6 +80,8 @@ function atualizarInterfaceCarrinho() {
     if (!estaLogado) {
         lista.innerHTML = '<p style="text-align:center; padding:20px;">Faça login para ver seu carrinho.</p>';
         contador.innerText = '0';
+        const btnCarrinho = document.getElementById('btn-carrinho');
+        if (btnCarrinho) btnCarrinho.setAttribute('aria-label', 'Abrir carrinho de compras: 0 itens');
         if (totalElemento) totalElemento.innerText = '0,00';
         return;
     }
@@ -112,13 +114,17 @@ function atualizarInterfaceCarrinho() {
             </div>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <span style="color: var(--dourado-suave); font-weight: 800; font-size: 1.2rem;">R$ ${subtotal.toFixed(2).replace('.', ',')}</span>
-                <button onclick="removerDoCarrinho(${index})" style="color: #A89F98; cursor: pointer; background: none; font-size: 1.2rem;">✖</button>
+                <button onclick="removerDoCarrinho(${index})" style="color: #A89F98; cursor: pointer; background: none; font-size: 1.2rem;" aria-label="Remover ${item.nome} do carrinho">✖</button>
             </div>
         `;
         lista.appendChild(div);
     });
 
     contador.innerText = totalItens;
+    const btnCarrinho = document.getElementById('btn-carrinho');
+    if (btnCarrinho) {
+        btnCarrinho.setAttribute('aria-label', `Abrir carrinho de compras: ${totalItens} ${totalItens === 1 ? 'item adicionado' : 'itens adicionados'}`);
+    }
     if (totalElemento) {
         totalElemento.innerText = totalDinheiro.toLocaleString('pt-BR', { minimumFractionDigits: 2 });
     }

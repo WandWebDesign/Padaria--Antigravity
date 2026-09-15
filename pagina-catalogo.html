@@ -13,22 +13,25 @@
 </head>
 
 <body>
-    <header class="header">
+    <!-- ACESSIBILIDADE WCAG: Atalho para pular direto ao conteúdo principal -->
+    <a href="#titulo-setor" class="skip-link sr-only">Pular para o catálogo de produtos</a>
+
+    <header class="header" role="banner">
         <section>
             <div class="logo-e-marca">
                 <div class="marca">
-                     <a href="padaria-landinpage.html" >Padaria Diniz</a>
+                     <a href="padaria-landinpage.html">Padaria Diniz</a>
                 </div>
                 <div class="logo">
-                    <a href="padaria-landinpage.html" class="logo img">
-                        <img src="./Imagens/Logo.png" alt="Logo da Padaria">
+                    <a href="padaria-landinpage.html" class="logo img" aria-label="Ir para a página inicial da Padaria Diniz">
+                        <img src="./Imagens/Logo.png" alt="Logotipo da Padaria Diniz">
                     </a>
                 </div>
             </div>
 
-            <nav class="menu-principal">
-                <button id="btn-tema" onclick="alternarTema()" aria-label="Alternar tema">🌙</button>
-                <button id="btn-carrinho" onclick="abrirCarrinho()">🛒(<span id="contador-carrinho">0</span>)</button>
+            <nav class="menu-principal" aria-label="Navegação principal">
+                <button id="btn-tema" onclick="alternarTema()" aria-label="Alternar tema claro e escuro">🌙</button>
+                <button id="btn-carrinho" onclick="abrirCarrinho()" aria-label="Abrir carrinho de compras: 0 itens adicionados">🛒(<span id="contador-carrinho">0</span>)</button>
                 
                 <a href="meus-pedidos.html">Códigos</a>
                 <a href="pagina-produtos.html">Meus pedidos</a>
@@ -49,15 +52,16 @@
         </ul>
     </div>
 
-    <main class="main-catalogo">
+    <main class="main-catalogo" id="conteudo-principal">
         <div class="setor-cabecalho">
             <div class="setor-linha-titulo">
                 <h1 id="titulo-setor">Carregando...</h1>
-                <a href="padaria-landinpage.html" class="btn-voltar">← Voltar ao Início</a>
+                <a href="padaria-landinpage.html" class="btn-voltar" aria-label="Voltar para a página inicial">← Voltar ao Início</a>
             </div>
 
             <div class="setor-busca">
-                <input type="text" id="barra-busca" placeholder="Buscar neste setor...">
+                <label for="barra-busca" class="sr-only">Buscar produtos neste setor</label>
+                <input type="text" id="barra-busca" placeholder="Buscar neste setor..." aria-label="Buscar produtos neste setor">
 
             <div class="filtros-catalogo">
               <button type="button" class="btn-filtro ativo" data-categoria="todos">Todos</button>

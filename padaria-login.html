@@ -14,9 +14,8 @@
 
         <section id="logo-login">
             <div class="conteudo-logo">
-                <img class="logo" src="./Imagens/Logo.png" alt="Logo Padaria Diniz">
-                <h1>MERCADINHO & PADARIA</h1>
-                <h1 class="diniz">DINIZ</h1>
+                <img class="logo" src="./Imagens/Logo.png" alt="Logotipo Padaria Diniz">
+                <h1>MERCADINHO & PADARIA <span class="diniz">DINIZ</span></h1>
                 <p>O sabor artesanal da nossa família para a sua mesa.</p>
             </div>
         </section>
@@ -24,38 +23,38 @@
         <section class="conteiner-login">
             <form class="form-login">
                 <h2>Bem-vindo de volta!</h2>
-                <h3>Faça login para acessar seus agendamentos e histórico.</h3>
+                <p class="subtitulo-login">Faça login para acessar seus agendamentos e histórico.</p>
 
                 <div class="login">
                     <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" autocomplete="email" required>
                 </div>
                 
                 <div class="login">
                     <label for="senha">Senha</label>
-                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" autocomplete="current-password" required>
                 </div>
 
                 <div class="opcoes-extras">
-                    <label class="lembrar-mim">
-                        <input type="checkbox"> Lembrar de mim
+                    <label class="lembrar-mim" for="lembrar-checkbox">
+                        <input type="checkbox" id="lembrar-checkbox" name="lembrar"> Lembrar de mim
                     </label>
                     <a href="padaria-esqueceu-senha.html" class="esqueceu-senha">Esqueceu a senha?</a>
                 </div>
                 
-                <button class="botao-login" type="submit">Entrar</button>
+                <button class="botao-login" type="submit" aria-label="Entrar na minha conta">Entrar</button>
 
-                <div class="divisor">
+                <div class="divisor" aria-hidden="true">
                     <span>ou</span>
                 </div>
 
                 <a href="pagina-cadastro.html" class="fazer-cadastro">Criar nova conta</a>
-                <a href="#" id="link-admin-seguro" class="link-colaborador">Login para colaboradores</a>
+                <a href="#" id="link-admin-seguro" class="link-colaborador" role="button" aria-label="Acesso restrito para colaboradores e administração">Login para colaboradores</a>
             </form>
         </section>
     </main>
 
-    <div id="toast-container"></div>
+    <div id="toast-container" role="status" aria-live="polite"></div>
 
     <script src="Script/funcionalidades.js"></script>
     <script src="Script/login.js"></script>

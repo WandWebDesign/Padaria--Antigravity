@@ -198,10 +198,15 @@
    CARDS RESPONSIVOS - 2 POR LINHA NO MOBILE
 ======================================================= */
 @media (max-width: 600px) {
+    .grid-produtos {
+        width: 100%;
+        padding: 0 5px;
+    }
+
     .card-produtos {
         /* Mostra 2 itens por vez com um pequeno respiro */
-        flex: 0 0 calc(50% - 10px); 
-        padding: 1rem;
+        flex: 0 0 calc(50% - 8px); 
+        padding: 0.8rem;
     }
 
     .card-produtos img {
@@ -215,7 +220,7 @@
         overflow: hidden;
     }
 
-    #texto-preço {
+    #texto-preço, .texto-preco {
         font-size: 1.1rem;
     }
 
@@ -224,10 +229,14 @@
         font-size: 0.8rem; /* Botão mais delicado */
     }
     
-    /* Setas do carrossel menores no mobile */
+    /* Setas do carrossel dentro da área visível */
     .botao-carrossel {
-        width: 35px;
-        height: 35px;
-        font-size: 1.5rem;
+        width: 34px;
+        height: 34px;
+        font-size: 1.3rem;
+        background-color: rgba(255, 255, 255, 0.9);
     }
+
+    .botao-antes { left: 2px; }
+    .botao-depois { right: 2px; }
 }

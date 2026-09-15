@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redefinir Senha - Padaria Diniz</title>
+    
+    <link rel="stylesheet" href="CSS/funcionalidades.css">
+    <link rel="stylesheet" href="CSS/esqueceu-senha.css">
+</head>
+<body>
+    <main class="pagina-esqueceu">
+        <a href="padaria-login.html" class="botao-fechar" aria-label="Voltar para o login">&times;</a>
+
+        <section id="logo-esqueceu">
+            <div class="conteudo-branding">
+                <img class="logo" src="./Imagens/Logo.png" alt="logo padaria diniz">
+                <h1>MERCADINHO & PADARIA</h1>
+                <h1 class="diniz">DINIZ</h1>
+                <p>Segurança e cuidado em cada detalhe do seu acesso.</p>
+            </div>
+        </section>
+
+        <section class="conteiner-esqueceu">
+            <form class="form-esqueceu">
+                <h2>Recuperar Acesso</h2>
+                <h3>Crie uma nova senha segura para sua conta.</h3>
+
+                <div class="campo-input">
+                    <label for="email">E-mail cadastrado</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="campo-input">
+                    <label for="senha">Nova Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Mínimo 8 caracteres" required>
+                </div>
+                
+                <div class="campo-input">
+                    <label for="confirmar-senha">Confirmar Nova Senha</label>
+                    <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Repita a nova senha" required>
+                </div>
+                
+                <div class="botoes-acoes">
+                    <button class="botao-esqueceu btn-salvar" type="submit">Salvar Nova Senha</button>
+                    <button class="botao-esqueceu btn-limpar" type="reset">Limpar Campos</button>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script src="Script/funcionalidades.js"></script>
+    <script src="Script/Validação-senha.js"></script>
+</body>
+</html>

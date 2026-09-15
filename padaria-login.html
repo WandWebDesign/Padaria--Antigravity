@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Padaria Diniz</title>
+    
+    <link rel="stylesheet" href="CSS/funcionalidades.css">
+    <link rel="stylesheet" href="CSS/padaria-login.css">
+</head>
+<body>
+    <main class="pagina-login">
+        <a href="padaria-landinpage.html" class="botao-fechar" aria-label="Voltar para a página inicial">&times;</a>
+
+        <section id="logo-login">
+            <div class="conteudo-logo">
+                <img class="logo" src="./Imagens/Logo.png" alt="Logo Padaria Diniz">
+                <h1>MERCADINHO & PADARIA</h1>
+                <h1 class="diniz">DINIZ</h1>
+                <p>O sabor artesanal da nossa família para a sua mesa.</p>
+            </div>
+        </section>
+
+        <section class="conteiner-login">
+            <form class="form-login">
+                <h2>Bem-vindo de volta!</h2>
+                <h3>Faça login para acessar seus agendamentos e histórico.</h3>
+
+                <div class="login">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+                </div>
+                
+                <div class="login">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
+
+                <div class="opcoes-extras">
+                    <label class="lembrar-mim">
+                        <input type="checkbox"> Lembrar de mim
+                    </label>
+                    <a href="padaria-esqueceu-senha.html" class="esqueceu-senha">Esqueceu a senha?</a>
+                </div>
+                
+                <button class="botao-login" type="submit">Entrar</button>
+
+                <div class="divisor">
+                    <span>ou</span>
+                </div>
+
+                <a href="pagina-cadastro.html" class="fazer-cadastro">Criar nova conta</a>
+                <a href="#" id="link-admin-seguro" class="link-colaborador">Login para colaboradores</a>
+            </form>
+        </section>
+    </main>
+
+    <div id="toast-container"></div>
+
+    <script src="Script/funcionalidades.js"></script>
+    <script src="Script/login.js"></script>
+</body>
+</html>

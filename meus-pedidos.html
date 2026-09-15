@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meus Pedidos</title>
+    <link rel="stylesheet" href="CSS/header.css">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <link rel="stylesheet" href="CSS/funcionalidades.css">
+    <link rel="stylesheet" href="CSS/meus-pedidos.css">
+</head>
+<body>
+    <header class="header">
+        <section>
+            <div class="logo-e-marca">
+                <div class="marca"><h1>Padaria Diniz</h1></div>
+                <div class="logo"><a href="padaria-landinpage.html" class="logo img"><img src="./Imagens/Logo.png" alt="Logo"></a></div>
+            </div>
+            <nav class="menu-principal">
+                <button id="btn-tema" onclick="alternarTema()">🌙</button>
+                <button id="btn-carrinho" onclick="abrirCarrinho()">🛒(<span id="contador-carrinho">0</span>)</button>
+
+                <a href="meus-pedidos.html">Códigos</a>
+                <a href="pagina-produtos.html">Meus pedidos</a>
+                <a href="padaria-login.html">Login</a>
+            </nav>
+        </section>
+    </header>
+
+    <main class="main-historico">
+    <header class="historico-header">
+        <h1 class="titulo-sessao">Códigos</h1>
+        
+        <div class="box-regras-cancelamento">
+            <h3>📋 Regras para Cancelamento:</h3>
+            <ul>
+                <li><strong>Itens Simples (Pão Francês):</strong> Cancelamento permitido até 2 horas antes da retirada.</li>
+                <li><strong>Produtos Especiais (Bolos, Salgados, Frios):</strong> Cancelamento permitido até 12 horas antes da retirada.</li>
+            </ul>
+        </div>
+    </header>
+
+    <div class="filtro-status-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+        <label for="filtro-status" style="font-weight: bold; color: #4A3B32;">Filtrar por Status:</label>
+        <select id="filtro-status" onchange="filtrarPedidos()" style="padding: 8px 15px; border-radius: 8px; border: 1px solid #A89F98; background-color: white; color: #4A3B32; font-size: 1rem; cursor: pointer;">
+            <option value="todos">Todos os Pedidos</option>
+            <option value="pendente">Pendente de Aprovação</option>
+            <option value="em produção">Em produção</option>
+            <option value="finalizado">Finalizado</option>
+            <option value="cancelado">Cancelado</option>
+        </select>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <button onclick="limparTodosFinalizados()" style="padding: 9px 15px; background-color: #A89F98; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.2s;">
+            🗑️ Limpar Concluídos
+        </button>
+        <button onclick="limparTodoHistorico()" style="padding: 9px 15px; background-color: #D9534F; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.2s;">
+            ⚠️ Limpar Tudo
+        </button>
+    </div>
+</div>
+    <div id="container-historico">
+        </div>
+</main>
+
+<a href="https://web.whatsapp.com/" target="_blank" class="zap" aria-label="Fale conosco no WhatsApp">
+        <img src="./Imagens Secundarias/whatsapp-icon-logo-svgrepo-com.svg" alt="ícone flutuante whatsapp">
+    </a>
+
+<div id="modal-cancelamento" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="modal-box" style="background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center;">
+        <h2 style="color: #D9534F; margin-bottom: 15px;">⚠️ Cancelar Pedido?</h2>
+        <p style="color: #4A3B32; font-size: 1.1rem; margin-bottom: 10px;">Deseja realmente cancelar este pedido?</p>
+        <p style="color: #D9534F; font-weight: 800; text-transform: uppercase; font-size: 0.9rem;">Esta ação não pode ser desfeita.</p>
+        
+        <div style="display: flex; gap: 10px; margin-top: 25px;">
+            <button onclick="confirmarCancelamentoCliente()" id="btn-confirmar-cancelar" style="flex: 1; padding: 12px; background: #D9534F; color: white; border: none; border-radius: 50px; font-weight: 800; cursor: pointer;">Sim, Cancelar</button>
+            <button onclick="fecharModalCancelamento()" style="flex: 1; padding: 12px; background: #A89F98; color: white; border: none; border-radius: 50px; font-weight: 800; cursor: pointer;">Não, Voltar</button>
+        </div>
+    </div>
+</div>
+
+<div id="modal-limpar-historico" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+    <div class="modal-box" style="background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <h2 style="color: #D9534F; margin-bottom: 15px; font-size: 1.5rem;">🗑️ Limpar Histórico?</h2>
+        
+        <p id="texto-modal-limpar" style="color: #4A3B32; font-size: 1.1rem; margin-bottom: 5px; font-weight: bold;">
+            Deseja realmente remover os pedidos finalizados?
+        </p>
+        <p style="color: #A89F98; font-size: 0.9rem; margin-bottom: 25px;">Eles sumirão da sua lista permanentemente.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <button onclick="fecharModalLimpar()" style="flex: 1; padding: 12px; background: #E0E0E0; color: #4A3B32; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s;">
+                Cancelar
+            </button>
+            <button id="btn-confirmar-limpar" style="flex: 1; padding: 12px; background: #D9534F; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s;">
+                Sim, Limpar
+            </button>
+        </div>
+    </div>
+</div>
+
+    <div id="toast-container"></div>
+    <script src="Script/funcionalidades.js"></script>
+    <script src="Script/meus-pedidos.js"></script>
+</body>
+</html>

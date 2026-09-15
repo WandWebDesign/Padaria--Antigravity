@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padaria Diniz | O Sabor Artesanal da Região</title>
+
+    <link rel="stylesheet" href="CSS/landingstyle.css">
+    <link rel="stylesheet" href="CSS/header.css">
+    <link rel="stylesheet" href="CSS/cards.css">
+    <link rel="stylesheet" href="CSS/funcionalidades.css">
+    <link rel="stylesheet" href="CSS/footer.css">
+</head>
+
+<body>
+    <header class="header">
+        <section>
+            <div class="logo-e-marca">
+                <div class="marca">
+                    <a href="padaria-landinpage.html" >Padaria Diniz</a>
+                </div>
+                <div class="logo">
+                    <a href="padaria-landinpage.html" class="logo img">
+                        <img src="./Imagens/Logo.png" alt="Logo da Padaria Diniz">
+                    </a>
+                </div>
+            </div>
+
+            <nav class="menu-principal">
+                <div class="busca-container">
+                    <input type="text" id="input-busca" placeholder="Buscar produtos..." onkeyup="pesquisarProdutos()">
+                </div>
+                
+                <button id="btn-tema" onclick="alternarTema()" aria-label="Alternar tema">🌙</button>
+                <button id="btn-carrinho" onclick="abrirCarrinho()">🛒(<span id="contador-carrinho">0</span>)</button>
+
+                <a href="meus-pedidos.html">Códigos</a>
+                <a href="pagina-produtos.html">Meus pedidos</a>
+                <a href="padaria-login.html">Login</a>
+                
+            </nav>
+        </section>
+    </header>
+
+    <div class="menu-categorias">
+        <ul class="escolhas">
+            <li><a href="pagina-catalogo.html?setor=frios"><img id="Frios" src="./Imagens Secundarias/Frios.svg" alt="Ícone Frios"><p>Frios</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=hortifruti"><img id="Hortifruti" src="./Imagens Secundarias/Hortifruti.svg" alt="Ícone Hortifruti"><p>Hortifruti</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=padaria"><img id="Padaria" src="./Imagens Secundarias/Pão.svg" alt="Ícone Pães"><p>Pães</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=laticinios"><img id="Laticinios" src="./Imagens Secundarias/Milk.svg" alt="Ícone Laticínios"><p>Laticínios</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=pets"><img id="Pets" src="./Imagens Secundarias/Pets.svg" alt="Ícone Pets"><p>Pets</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=doces"><img id="Doces" src="./Imagens Secundarias/Doces.svg" alt="Ícone Doces"><p>Doces</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=bebidas"><img id="Bebidas" src="./Imagens Secundarias/soda..svg" alt="Ícone Bebidas"><p>Bebidas</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=limpeza"><img id="Limpeza" src="./Imagens Secundarias/Limpeza.svg" alt="Ícone Limpeza"><p>Limpeza/Higiene</p></a></li>
+        </ul>
+    </div>
+
+    <section class="iniciar" id="inicio">
+        <div class="banner-principal">
+            <h3>A PADARIA COM OS MELHORES PRODUTOS DA REGIÃO</h3>
+            <p>Experimente nossas receitas exclusivas que matam sua fome</p>
+        </div>
+    </section>
+
+    <main>
+        <div class="CTA">
+            <h3>"Alguns dos nossos melhores produtos agora podem ser agendados: peça e retire no momento certo!"</h3>
+        </div>
+
+        <section class="secao-peça-retire" aria-labelledby="titulo-peca-retire">
+            <div class="topo-cards">
+                <h3 id="titulo-peca-retire" class="titulo-secoes">Peça & Retire</h3>
+                <a href="pagina-catalogo.html?filtro=retiravel" aria-label="Ver todos os produtos disponíveis para retirar">Ver Disponíveis</a>
+            </div>
+
+            <div id="carrossel-peça-e-retire" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes" aria-label="Ver produtos anteriores">&lsaquo;</button>
+
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois" aria-label="Ver mais produtos">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="menu-central">
+            <h1>Descubra todos os nossos produtos</h1>
+            <div class="btn-setores">
+                <a id="padaria-icone" href="pagina-catalogo.html?setor=padaria" class="botao-produtos-padaria">Padaria</a>
+                <a id="açougue-icone" href="pagina-catalogo.html?setor=frios" class="botao-produtos-acougue">Açougue</a>
+                <a id="hortifruti-icone" href="pagina-catalogo.html?setor=hortifruti" class="botao-produtos-hortifruti">Hortifruti</a>
+                <a id="mercearia-icone" href="pagina-catalogo.html?setor=mercearia" class="botao-produtos-mercearia">Mercearia</a>
+            </div>
+        </section>
+
+        <section class="produto-ofertas" id="produto-ofertas">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Ofertas da Semana</h3>
+                <a href="pagina-catalogo.html?filtro=oferta">Ver Ofertas</a>
+            </div>
+
+            <div id="carrossel-ofertas" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                   
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-padaria" id="produto-padaria">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Padaria</h3>
+                <a href="pagina-catalogo.html?setor=padaria">Ver Padaria</a>
+            </div>
+
+            <div id="carrossel-padaria" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-açougue" id="produto-açougue">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Açougue/Frios</h3>
+                <a href="pagina-catalogo.html?setor=frios">Ver Açougue</a>
+            </div>
+
+            <div id="carrossel-açougue" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-hortifruti" id="produto-hortifruti">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Hortifruti</h3>
+                <a href="pagina-catalogo.html?setor=hortifruti">Ver Hortifruti</a>
+            </div>
+
+            <div id="carrossel-hortifruti" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-mercearia" id="produto-mercearia">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Mercearia</h3>
+                <a href="pagina-catalogo.html?setor=mercearia">Ver Mercearia</a>
+            </div>
+
+            <div id="carrossel-mercearia" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+    </main>
+
+    <a href="https://web.whatsapp.com/" target="_blank" class="zap" aria-label="Fale conosco no WhatsApp">
+        <img src="./Imagens Secundarias/whatsapp-icon-logo-svgrepo-com.svg" alt="ícone flutuante whatsapp">
+    </a>
+
+
+    <div id="carrinho-overlay" class="carrinho-overlay" onclick="fecharCarrinho()"></div>
+    <aside id="carrinho-lateral" class="carrinho-oculto">
+        <div class="carrinho-header">
+            <h2>Seu Carrinho</h2>
+            <button onclick="fecharCarrinho()">Fechar ✖</button>
+        </div>
+        <div class="carrinho-itens" id="lista-carrinho">
+            </div>
+        <div class="carrinho-footer">
+            <h3>Total: R$ <span id="total-carrinho">0,00</span></h3>
+            <button class="btn-finalizar" onclick="window.location.href='pagina-produtos.html'">Finalizar Pedido</button>
+        </div>
+    </aside>
+
+    <div id="toast-container"></div>
+
+    <footer>
+        <div class="rodape-container">
+            <nav class="rodape-menu">
+                <h3>Navegue</h3>
+                <ul>
+                    <li><a href="pagina-produtos.html">Meus pedidos</a></li>
+                    <li><a href="pagina-catalogo.html?filtro=retiravel">Peça e Retire</a></li>
+                    <li><a href="pagina-catalogo.html?setor=padaria">Padaria</a></li>
+                    <li><a href="pagina-catalogo.html?setor=frios">Açougue</a></li>
+                    <li><a href="pagina-catalogo.html?setor=hortifruti">Hortifruti</a></li>
+                    <li><a href="pagina-catalogo.html?setor=mercearia">Mercearia</a></li>
+                </ul>
+            </nav>
+
+            <div class="rodape-sobre">
+                <h3>Sobre Nós</h3>
+                <ul>
+                    <li><a href="#">Localização</a></li>
+                    <li><a href="https://web.whatsapp.com/">WhatsApp</a></li>
+                </ul>
+            </div>
+
+            <div class="formulario-newsletter">
+                <h3>Receba Nossas Ofertas</h3>
+                <p>Cadastre-se para receber novidades!.</p>
+                <form>
+                    <label for="nome" class="sr-only" style="display:none;">Seu nome:</label>
+                    <input id="nome" type="text" name="text" placeholder="Seu nome" required>
+
+                    <label for="tel" class="sr-only" style="display:none;">Seu número:</label>
+                    <input id="tel" type="tel" name="tel" placeholder="Seu número (00) 12345-6789" required>
+
+                    <button id="cadastro" type="submit">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="formas-pagamento">
+            <h3>Formas de Pagamento</h3>
+            <img src="https://cdn.shopify.com/s/files/1/0585/6372/3469/files/Copia_de_s_4_1024x1024.png?v=1667503757" alt="Formas de pagamento (Visa, Master, Pix, etc.)">
+        </div>
+
+        <p id="copyright">Padaria Diniz &copy; 2026 - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="Script/script.js"></script> <!--Faz a barra suspensa-->
+    <script src="Script/catalogo.js"></script> <!--Carrega os produtos-->
+    <script src="Script/carrocel.js"></script> <!--Faz animação do carrocel-->
+    <script src="Script/funcionalidades.js"></script> <!--Ativa modo Dark-->
+    <script src="Script/landing-dinamica.js"></script> <!--Preeche os carroceis-->
+</body>
+</html>

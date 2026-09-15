@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Produto | Padaria Diniz</title>
+
+    <link rel="stylesheet" href="CSS/header.css">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <link rel="stylesheet" href="CSS/funcionalidades.css">
+    <link rel="stylesheet" href="CSS/pagina-agendamento.css">
+</head>
+
+<body>
+    <header class="header">
+        <section>
+            <div class="logo-e-marca">
+                <div class="marca">
+                     <a href="padaria-landinpage.html">Padaria Diniz</a>
+                </div>
+                <div class="logo">
+                    <a href="padaria-landinpage.html" class="logo img">
+                        <img src="./Imagens/Logo.png" alt="Logo da Padaria">
+                    </a>
+                </div>
+            </div>
+
+            <nav class="menu-principal">
+                <button id="btn-tema" onclick="alternarTema()">🌙</button>
+                <button id="btn-carrinho" onclick="abrirCarrinho()">🛒(<span id="contador-carrinho">0</span>)</button>
+
+                <a href="meus-pedidos.html">Códigos</a>
+                <a href="pagina-produtos.html">Meus pedidos</a>
+                <a href="padaria-login.html">Login</a>
+            </nav>
+        </section>
+    </header>
+
+    <main class="main-agendamento">
+        <section class="container-produtos">
+            
+            <div class="coluna-da-esquerda">
+                <div class="imagem-principal">
+                    <img id="produtoimagem" alt="Imagem do Produto">
+                </div>
+                <div class="lista-imagens" id="container-miniaturas">
+                </div>
+            </div>
+
+            <div class="coluna-da-direita">
+                <h1 id="tituloproduto" class="titulo-produto">Carregando Produto...</h1>
+                <p class="label-descrição">Descrição do Produto:</p>
+                <div class="Descrição">
+                    <p id="descricao">Carregando detalhes...</p>
+                </div>
+
+                <div class="container-valores">
+                    <div class="container-qtd">
+                        <label>Quantidade</label>
+                        <div class="preço-box qtd-box">
+                            <button id="ret-btn" class="qtd-btn">-</button>
+                            <span id="Qtd">1</span>
+                            <button id="plus-btn" class="qtd-btn">+</button>
+                        </div>
+                    </div>
+
+                    <div class="container-qtd">
+                        <label>Valor Total</label>
+                        <div id="preço-final" class="preço-box valor-box">
+                            R$ 0,00
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aviso informativo: o agendamento acontece no carrinho -->
+                <div style="
+                    margin-top: 20px;
+                    padding: 12px 16px;
+                    background: #FFF8EC;
+                    border-left: 4px solid var(--dourado-suave, #C8973D);
+                    border-radius: 8px;
+                    font-size: 0.92rem;
+                    color: #4A3B32;
+                    font-weight: 700;
+                ">
+                    📅 Após adicionar ao carrinho, você poderá <strong>agendar a data e horário de retirada</strong> diretamente na página de finalização do pedido.
+                </div>
+
+                <div class="btn-baixo">
+                    <a href="pagina-catalogo.html?filtro=retiravel" class="botao-voltar">← Voltar</a>
+                    <button class="botao-agendar" id="btn-adicionar-carrinho" style="margin-top: 20px;">
+                        🛒 Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="carrinho-overlay" class="carrinho-overlay" onclick="fecharCarrinho()"></div>
+    <aside id="carrinho-lateral" class="carrinho-oculto">
+        <div class="carrinho-header">
+            <h2>Seu Carrinho</h2>
+            <button onclick="fecharCarrinho()">Fechar ✖</button>
+        </div>
+        <div class="carrinho-itens" id="lista-carrinho"></div>
+        <div class="carrinho-footer">
+            <h3>Total: R$ <span id="total-carrinho">0,00</span></h3>
+            <button class="btn-finalizar" onclick="window.location.href='pagina-produtos.html'">Finalizar Pedido</button>
+        </div>
+    </aside>
+
+    <div id="toast-container"></div>
+    
+    <script src="Script/funcionalidades.js"></script>
+    <script src="Script/agendamento.js"></script>
+</body>
+</html>

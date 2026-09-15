@@ -39,15 +39,15 @@ function criarCardHTML(produto, idCarrossel) {
     let botaoHTML = "";
     // O banco retorna 1 para true em campos booleanos.
     if (produto.is_retiravel === 1 && idCarrossel === "carrossel-peça-e-retire") {
-        botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="botao-comprar" style="text-decoration: none;">Adicionar</a>`;
+        botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="botao-comprar" style="text-decoration: none;" aria-label="Agendar ${produto.nome} para retirada">Adicionar</a>`;
     }
 
     return `
         <article class="card-produtos">
-            <img src="${imagemSrc}" alt="${produto.nome}">
+            <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
             <h4>${produto.nome}</h4>
             <h5>${nomeSetor}</h5>
-            <p id="texto-preço">R$ ${precoPrincipal}</p>
+            <p class="texto-preco">R$ ${precoPrincipal}</p>
             ${precoSecundario}
             ${botaoHTML}
         </article>
@@ -81,8 +81,8 @@ async function carregarLandingPage() {
         // 1. Busca os dados da API
         const todosProdutos = await carregarProdutosDoBanco();
         
-        if (todosProdutos.length === 0) {
-            console.warn("O banco de dados não retornou produtos.");
+        if (!Array.isArray(todosProdutos) || todosProdutos.length === 0) {
+            console.warn("O banco de dados não retornou uma lista válida de produtos.");
             return;
         }
 

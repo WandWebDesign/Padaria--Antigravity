@@ -100,18 +100,18 @@ function renderizarProdutos(lista) {
 
         if (ehRetiravel) {
             cardInternoHTML = `
-                <a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="card-produto">
-                    <img src="${imagemSrc}" alt="${produto.nome}">
+                <a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="card-produto" aria-label="Ver detalhes de ${produto.nome}">
+                    <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
                     <h3>${produto.nome}</h3>
                 </a>`;
-            botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="btn-agendar">Adicionar</a>`;
+            botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="btn-agendar" aria-label="Agendar ${produto.nome} para retirada">Adicionar</a>`;
         } else {
             cardInternoHTML = `
                 <div class="card-produto card-visualizavel">
-                    <img src="${imagemSrc}" alt="${produto.nome}">
+                    <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
                     <h3>${produto.nome}</h3>
                 </div>`;
-            botaoHTML = `<span class="btn-indisponivel">Disponível na loja</span>`;
+            botaoHTML = `<span class="btn-indisponivel" aria-label="${produto.nome} disponível apenas na loja física">Disponível na loja</span>`;
         }
 
         containerProdutos.innerHTML += `

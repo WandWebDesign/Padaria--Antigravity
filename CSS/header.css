@@ -71,7 +71,7 @@ html {
 body {
     font-family: 'Nunito', sans-serif;
     background-color: var(--branco);
-    color: var(--cafe-escuro);
+    color: var(--branco);
     padding-top: var(--header-height); /* Espaço para não esconder o topo do site */
     margin: 0;
 }

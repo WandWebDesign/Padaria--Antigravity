@@ -1,0 +1,252 @@
+:root {
+    --cafe-escuro: #4A3B32;    
+    --dourado-suave: #D4AF37;  
+    --creme-fundo: #FFF9F0;    
+    --branco: #FFFFFF;
+}
+
+.main-historico {
+    max-width: 900px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+
+.titulo-sessao {
+    font-size: 2.5rem;
+    color: var(--cafe-escuro);
+    font-weight: 800;
+}
+
+.subtitulo {
+    color: #A89F98;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.card-pedido-finalizado {
+    background: var(--branco);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pedido-info h2 {
+    font-size: 1.5rem;
+    color: var(--cafe-escuro);
+    margin-bottom: 5px;
+}
+
+.codigo-tag {
+    background: var(--creme-fundo);
+    color: var(--cafe-escuro);
+    font-weight: 900;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: 2px dashed var(--dourado-suave);
+    font-size: 1.8rem;
+}
+
+.detalhes-lista {
+    font-size: 0.95rem;
+    color: var(--cafe-claro);
+    margin-top: 10px;
+}
+
+body.dark-mode .card-pedido-finalizado {
+    background: #2A1C15;
+    border-color: rgba(255,255,255,0.05);
+}
+body.dark-mode .titulo-sessao, body.dark-mode .pedido-info h2 { color: #E8E0D5; }
+
+
+/* Adicione estas linhas ao seu arquivo meus-pedidos.css */
+
+.data-compra {
+    font-size: 0.85rem;
+    color: #A89F98;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.info-retirada {
+    background-color: rgba(212, 175, 55, 0.1); /* Um fundo dourado bem clarinho */
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 10px 0;
+    font-size: 1rem;
+    color: var(--cafe-escuro);
+    border-left: 4px solid var(--dourado-suave);
+}
+
+body.dark-mode .info-retirada {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #E8E0D5;
+}
+
+/* Box de Regras no Topo */
+.box-regras-cancelamento {
+    background-color: #fff9f0;
+    border-left: 5px solid var(--dourado-suave);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 1.5rem 0 2.5rem 0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+}
+
+.box-regras-cancelamento h3 {
+    margin-bottom: 10px;
+    font-size: 1.1rem;
+    color: var(--cafe-escuro);
+}
+
+.box-regras-cancelamento ul {
+    list-style: none;
+    font-size: 0.95rem;
+    color: var(--cafe-claro);
+}
+
+/* Estilo da lista de itens dentro do card */
+.lista-itens-resumo {
+    list-style: none;
+    margin: 10px 0;
+    padding-left: 0;
+    border-left: 2px solid var(--creme-fundo);
+    padding-left: 15px;
+}
+
+/* Botão de Cancelar */
+.btn-cancelar-pedido {
+    background: transparent;
+    color: #D9534F;
+    border: 1px solid #D9534F;
+    padding: 8px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-top: 15px;
+    width: 100%;
+    transition: all 0.3s;
+}
+
+.btn-cancelar-pedido:hover {
+    background: #D9534F;
+    color: white;
+}
+
+/* Mensagem de Prazo Expirado */
+.prazo-expirado {
+    display: block;
+    margin-top: 15px;
+    font-size: 0.85rem;
+    color: #A89F98;
+    font-style: italic;
+    text-align: center;
+}
+
+/* Dark Mode para as regras */
+body.dark-mode .box-regras-cancelamento {
+    background: #2A1C15;
+    color: #E8E0D5;
+}
+
+.btn-confirmar-vermelho:hover {
+    background-color: #c9302c !important;
+    transform: scale(1.02);
+}
+
+/* Garante que o modal de cancelamento use a mesma animação que criamos para o recibo */
+#modal-cancelamento .modal-box {
+    animation: aparecer 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* =======================================================
+   RESPONSIVIDADE REFINADA - MEUS PEDIDOS (HISTÓRICO)
+======================================================= */
+@media (max-width: 768px) {
+    /* Ajuste do container principal */
+    .main-historico {
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .titulo-sessao {
+        font-size: 1.8rem;
+        text-align: center;
+    }
+
+    /* Box de Regras no Topo */
+    .box-regras-cancelamento {
+        padding: 1.2rem;
+        margin: 1.5rem 0;
+    }
+
+    .box-regras-cancelamento h3 {
+        font-size: 1rem;
+    }
+
+    .box-regras-cancelamento ul {
+        font-size: 0.85rem;
+    }
+
+    /* --- CARTÃO DE PEDIDO --- */
+    .card-pedido-finalizado {
+        flex-direction: column; /* Empilha as informações e as ações */
+        align-items: stretch;    /* Faz os elementos ocuparem a largura toda */
+        padding: 20px;
+        gap: 20px;
+    }
+
+    .pedido-info {
+        width: 100%;
+        text-align: left;
+    }
+
+    .pedido-info h2 {
+        font-size: 1.3rem;
+        margin-top: 5px;
+    }
+
+    /* Lista de Itens no Mobile */
+    .lista-itens-resumo {
+        margin: 15px 0;
+        font-size: 0.9rem;
+    }
+
+    /* --- ÁREA DE AÇÕES (CÓDIGO E BOTÃO) --- */
+    .acoes-historico {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+        padding-top: 20px;
+    }
+
+    .codigo-tag {
+        width: 100%;
+        text-align: center;
+        font-size: 1.5rem; /* Ajuste para não ficar exagerado */
+        padding: 12px;
+    }
+
+    .btn-cancelar-pedido {
+        width: 100%;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .prazo-expirado {
+        font-size: 0.8rem;
+    }
+
+    /* Ajuste do Modal no Mobile */
+    #modal-cancelamento .modal-box {
+        width: 95%;
+        padding: 20px;
+    }
+}

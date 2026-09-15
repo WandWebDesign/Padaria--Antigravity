@@ -1,0 +1,269 @@
+/* =========================================
+   VARIÁVEIS DE MODO ESCURO (Noturno Gourmet)
+========================================= */
+body.dark-mode {
+    /* Tons de café mais claros e acinzentados para ser "mais leve" */
+    --bg: #2d241e;               /* Marrom suave, menos denso que o anterior */
+    --creme-fundo: #3d332d;      /* Fundo de seções com contraste reduzido */
+    --text: #f0eae4;             /* Texto levemente mais brilhante para leitura */
+    --cafe-escuro: #f0eae4;      /* Inverte o café escuro para um creme claro */
+    --textcard: #e0d6cd;
+    --branco: #382d27;           /* Onde era branco puro, vira um tom chocolate médio */
+    
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* AJUSTE ESPECÍFICO: Mantém o título do Banner Hero sempre branco */
+body.dark-mode .iniciar h3 {
+    color: #FFFFFF !important;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7); /* Sombra mais forte para destacar no fundo escuro */
+}
+
+/* Ajustes finos adicionais para suavizar o Dark Mode */
+body.dark-mode .header {
+    background-color: var(--bg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .menu-categorias {
+    background-color: var(--creme-fundo);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+body.dark-mode #input-busca {
+    background-color: rgba(255, 255, 255, 0.08); /* Busca um pouco mais visível */
+    color: var(--text);
+}
+/* =========================================
+   CARRINHO LATERAL (OFF-CANVAS) - PREMIUM
+========================================= */
+#carrinho-lateral {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Começa totalmente fora da tela */
+    width: 380px;
+    max-width: 100%; /* No mobile, ocupa 100% */
+    height: 100vh;
+    background-color: var(--branco);
+    box-shadow: -10px 0 30px rgba(0,0,0,0.2);
+    transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 2000; /* Acima de tudo */
+    display: flex;
+    flex-direction: column;
+}
+
+/* OVERLAY (Fundo escuro atrás do carrinho) */
+.carrinho-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); /* Efeito de vidro fosco no fundo */
+    z-index: 1999;
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.carrinho-overlay.mostrar {
+    display: block;
+    opacity: 1;
+}
+
+body.dark-mode #carrinho-lateral {
+    background-color: var(--creme-fundo);
+    color: var(--text);
+}
+
+#carrinho-lateral.aberto {
+    right: 0; 
+}
+
+/* Cabeçalho do Carrinho */
+.carrinho-header {
+    padding: 20px 25px;
+    background-color: #4A3B32; /* Café escuro */
+    color: #D4AF37; /* Dourado */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.carrinho-header h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.carrinho-header button {
+    background: none;
+    border: none;
+    color: #FFF9F0;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.carrinho-header button:hover {
+    color: #D4AF37;
+}
+
+/* Itens do Carrinho */
+.carrinho-itens {
+    flex: 1;
+    overflow-y: auto;
+    padding: 25px;
+}
+
+/* Itens mais espaçados para o toque no Mobile */
+.item-carrinho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 15px 0;
+    gap: 10px;
+}
+
+body.dark-mode .item-carrinho {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Rodapé do Carrinho */
+.carrinho-footer {
+    padding: 25px;
+    background-color: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode .carrinho-footer {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.carrinho-footer h3 {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
+    color: var(--cafe-escuro);
+}
+
+/* Botão Finalizar */
+.btn-finalizar {
+    width: 100%;
+    padding: 15px;
+    background-color: #D4AF37; /* Dourado */
+    color: #4A3B32; /* Café Escuro */
+    border: none;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-finalizar:hover {
+    background-color: #4A3B32;
+    color: #FFF9F0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(74, 59, 50, 0.3);
+}
+
+/* =========================================
+   NOTIFICAÇÕES TOAST (Adicionado ao carrinho)
+========================================= */
+#toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.toast {
+    font-family: 'Nunito', sans-serif;
+    background-color: #4A3B32;
+    color: #FFF9F0;
+    padding: 15px 25px;
+    border-radius: 12px;
+    border-left: 5px solid #D4AF37; /* Detalhe lateral dourado */
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    font-weight: 600;
+    font-size: 1.1rem;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.3s, transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.toast.mostrar {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================================
+   RESPONSIVIDADE DO CARRINHO (MOBILE)
+========================================= */
+@media (max-width: 600px) {
+    #carrinho-lateral {
+        width: 100%; /* Carrinho vira tela cheia no celular */
+    }
+
+    .carrinho-header {
+        padding: 15px 20px;
+    }
+
+    .carrinho-header h2 {
+        font-size: 1.3rem;
+    }
+
+    /* Fechar maior para facilitar o clique */
+    .carrinho-header button {
+        background-color: rgba(255,255,255,0.1);
+        padding: 8px 15px;
+        border-radius: 50px;
+        font-size: 0.9rem;
+    }
+
+    .carrinho-itens {
+        padding: 20px;
+    }
+
+    /* Footer fixo na base para o polegar */
+    .carrinho-footer {
+        padding: 20px;
+        padding-bottom: calc(20px + env(safe-area-inset-bottom)); /* Ajuste para iPhones novos */
+    }
+
+    .btn-finalizar {
+        height: 60px; /* Botão bem grande e fácil de clicar */
+        font-size: 1.1rem;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 1000;
+}
+.modal-conteudo {
+    background: white; padding: 25px; border-radius: 12px;
+    text-align: center; max-width: 400px; width: 90%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.modal-icone { font-size: 40px; margin-bottom: 10px; }
+.modal-conteudo button {
+    margin-top: 20px; padding: 10px 20px;
+    background: #d4a373; color: white; border: none;
+    border-radius: 5px; cursor: pointer;
+}

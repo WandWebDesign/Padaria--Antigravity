@@ -1,0 +1,282 @@
+/* =======================================================
+   CORES ELEGANTES (BETA) - Padaria Artesanal
+======================================================= */
+:root {
+    --cafe-escuro: #4A3B32;    /* Marrom escuro para textos e títulos */
+    --cafe-claro: #6D5445;     /* Marrom suave para subtítulos */
+    --dourado-suave: #D4AF37;  /* Dourado para detalhes e botões */
+    --creme-fundo: #FFF9F0;    /* Fundo off-white/creme */
+    --branco: #FFFFFF;
+}
+
+/* =======================================================
+   CTA INICIAL DO SITE (Frase de Destaque)
+======================================================= */
+.CTA {
+    margin: 4rem 2rem;
+    color: var(--cafe-claro);
+    font-size: 28px;
+    font-family: 'Nunito', sans-serif;
+    font-style: italic;
+    font-weight: 300;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* =======================================================
+   SEÇÃO INICIAL (BANNER HERO)
+======================================================= */
+.iniciar {
+    /* O linear-gradient escurece a imagem de fundo para o texto brilhar */
+    background: linear-gradient(rgba(30, 20, 15, 0.6), rgba(30, 20, 15, 0.6)), url('../Imagens\ Secundarias/Fachada.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed; /* Dá um efeito sutil de paralaxe ao rolar a página */
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.iniciar .banner-principal {
+    max-width: 800px;
+    animation: fadeIn 1.5s ease-in-out; /* Animação suave ao carregar */
+}
+
+/* Título Principal do Banner */
+.iniciar h3 {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 4.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--branco);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Parágrafo do Banner */
+.iniciar p {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
+    color: #F8F8F8;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+/* =======================================================
+   TÍTULOS DAS SEÇÕES (Ex: Padaria, Açougue, Ofertas)
+======================================================= */
+.titulo-secoes {
+    text-align: left;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 2.5rem;
+    color: var(--cafe-escuro);
+    /* CORREÇÃO: Removi o margin-bottom gigante para alinhar com o botão */
+    margin-bottom: 0; 
+    padding-top: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: relative;
+    display: inline-block;
+}
+
+/* Linha dourada charmosa embaixo do título */
+.titulo-secoes::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 60%;
+    height: 3px;
+    background-color: var(--dourado-suave);
+    border-radius: 2px;
+}
+
+/* Alinhamento do Título com o Botão de "Ver Todos" */
+.topo-cards {
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    
+    /* AS DUAS LINHAS MÁGICAS PARA ALINHAR COM OS CARDS: */
+    width: 90%; 
+    margin: 0 auto 2.5rem auto; /* Centraliza na tela e dá o espaço correto para os cards abaixo */
+}
+
+/* Botão "Ver Disponíveis / Ver Catálogo" */
+.topo-cards a {
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--cafe-escuro);
+    background-color: transparent;
+    border: 2px solid var(--cafe-escuro);
+    border-radius: 50px; /* Formato de pílula (mais moderno) */
+    padding: 8px 24px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+}
+
+.topo-cards a:hover {
+    color: var(--branco);
+    background-color: var(--cafe-escuro);
+    box-shadow: 0px 4px 12px rgba(74, 59, 50, 0.3);
+    transform: translateY(-2px);
+}
+
+/* =======================================================
+   MENU CENTRAL (Descubra todos os nossos produtos)
+======================================================= */
+.menu-central {
+    background-color: var(--creme-fundo);
+    color: var(--cafe-escuro);
+    text-align: center;
+    padding: 6rem 2rem; /* Mais respiro (espaço em branco) */
+    margin: 4rem 0;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.03); /* Sombra super leve */
+}
+
+.menu-central h1 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.menu-central h2 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    margin-bottom: 40px;
+    color: var(--cafe-claro);
+}
+
+.btn-setores {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px; /* Espaço uniforme entre os botões */
+}
+
+.btn-setores a {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    background-color: var(--branco);
+    color: var(--cafe-escuro);
+    position: relative;
+    border-radius: 12px;
+    padding: 30px 60px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Hover suave, sem crescer exageradamente */
+.btn-setores a:hover {
+    background-color: var(--dourado-suave);
+    color: var(--branco);
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(212, 175, 55, 0.3);
+}
+
+/* Emojis nos botões do Menu Central */
+.botao-produtos-padaria::after { content: "🥖"; }
+.botao-produtos-acougue::after { content: "🥩"; }
+.botao-produtos-hortifruti::after { content: "🥕"; }
+.botao-produtos-mercearia::after { content: "🧺"; }
+
+.btn-setores a::after {
+    opacity: 0;
+    position: absolute;
+    top: 50%;
+    right: 25px; /* Move para o lado direito do texto */
+    transform: translateY(-50%) translateX(-10px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-size: 1.8rem;
+}
+
+.btn-setores a:hover::after {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* =======================================================
+   ANIMAÇÕES GERAIS
+======================================================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =======================================================
+   RESPONSIVIDADE (Telas menores)
+======================================================= */
+/* =======================================================
+   RESPONSIVIDADE REFINADA - LANDING PAGE
+======================================================= */
+@media (max-width: 768px) {
+    /* Ajuste do Banner Hero */
+    .iniciar h3 {
+        font-size: 2.2rem; /* Reduzido de 3rem para não ocupar a tela toda */
+        letter-spacing: 1px;
+    }
+    
+    .iniciar p {
+        font-size: 1.1rem;
+        padding: 0 10px;
+    }
+
+    /* Frase de Destaque (CTA) */
+    .CTA {
+        margin: 2rem 1.5rem;
+        font-size: 20px; /* Mais equilibrado para leitura */
+    }
+
+    /* Títulos das Seções */
+    .titulo-secoes {
+        font-size: 1.6rem;
+        padding-top: 1rem;
+    }
+
+    /* Cabeçalho de cada seção (Título + Ver Todos) */
+    .topo-cards {
+        flex-direction: row; /* Mantém na mesma linha se o nome for curto */
+        align-items: center;
+        width: 92%;
+        margin-bottom: 1.5rem;
+    }
+
+    .topo-cards a {
+        padding: 6px 16px;
+        font-size: 12px;
+    }
+
+    /* Menu Central (Setores) - Agora em 2 colunas */
+    .btn-setores {
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* 2 botões por linha */
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .btn-setores a {
+        padding: 15px 10px; /* Botões mais compactos */
+        font-size: 1.1rem;
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Removemos o emoji no mobile para ganhar espaço interno */
+    .btn-setores a::after {
+        display: none;
+    }
+}

@@ -1,0 +1,226 @@
+/* =======================================================
+   FONTES E VARIÁVEIS GOURMET
+======================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+:root {
+    --cafe-escuro: #4A3B32;    
+    --cafe-claro: #6D5445;     
+    --dourado-suave: #D4AF37;  
+    --creme-fundo: #FFF9F0;    
+    --branco: #FFFFFF;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+body {
+    background: var(--creme-fundo);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px;
+    color: var(--cafe-escuro);
+}
+
+/* --- Container Principal (Cartão) --- */
+.pagina-esqueceu {
+    position: relative;
+    display: flex;
+    width: 100%;
+    max-width: 1100px;
+    min-height: 620px; /* Altura corrigida para não espremer */
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.12);
+    border-radius: 30px;
+    overflow: hidden;
+    background: var(--branco);
+}
+
+/* --- Lado Esquerdo (Branding) --- */
+#logo-esqueceu {
+    flex: 1.1;
+    background: linear-gradient(rgba(74, 59, 50, 0.88), rgba(74, 59, 50, 0.88)), url('../Imagens/Fundo.png') center/cover no-repeat;
+    color: var(--branco);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    text-align: center;
+}
+
+#logo-esqueceu .logo {
+    width: 140px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0 6px 10px rgba(0,0,0,0.4));
+}
+
+#logo-esqueceu h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    margin-bottom: -5px;
+}
+
+#logo-esqueceu .diniz {
+    font-family: 'Amatic SC', cursive;
+    font-size: 6.5rem;
+    color: var(--dourado-suave);
+    font-weight: 700;
+    letter-spacing: 6px;
+    line-height: 1;
+    margin-bottom: 15px;
+}
+
+#logo-esqueceu p {
+    font-size: 1.15rem;
+    font-weight: 300;
+    color: #E8E0D5;
+    max-width: 300px;
+}
+
+/* --- Lado Direito (Formulário) --- */
+.conteiner-esqueceu {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 60px 50px;
+    background: var(--branco);
+}
+
+.form-esqueceu {
+    width: 100%;
+    max-width: 440px; /* Largura corrigida */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+h2 {
+    color: var(--cafe-escuro);
+    font-size: 2.4rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+h3 {
+    color: var(--cafe-claro);
+    font-size: 1.05rem;
+    font-weight: 400;
+    margin-bottom: 25px;
+    line-height: 1.5;
+}
+
+/* --- Inputs Modernos --- */
+.campo-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-input label {
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--cafe-escuro);
+}
+
+.campo-input input {
+    width: 100%;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: var(--creme-fundo);
+    font-size: 1.05rem;
+    padding: 16px 24px;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+}
+
+.campo-input input:focus {
+    border-color: var(--dourado-suave);
+    background: var(--branco);
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.15);
+}
+
+/* --- Botões --- */
+.botoes-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.botao-esqueceu {
+    border-radius: 50px;
+    padding: 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-salvar {
+    background: var(--dourado-suave);
+    color: var(--cafe-escuro);
+}
+
+.btn-salvar:hover {
+    background: var(--cafe-escuro);
+    color: var(--branco);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(74, 59, 50, 0.25);
+}
+
+.btn-limpar {
+    background: transparent;
+    color: var(--cafe-claro);
+    border: 2px solid var(--cafe-claro);
+}
+
+.btn-limpar:hover {
+    background: #fdf2e9;
+}
+
+/* --- Botão Fechar --- */
+.botao-fechar {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    z-index: 100;
+    color: var(--cafe-escuro);
+    font-size: 30px;
+    text-decoration: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.botao-fechar:hover {
+    background: var(--dourado-suave);
+    color: var(--branco);
+    transform: rotate(90deg);
+}
+
+/* --- Responsividade Mobile --- */
+@media (max-width: 900px) {
+    body { padding: 0; background: var(--branco); }
+    .pagina-esqueceu { flex-direction: column; border-radius: 0; box-shadow: none; min-height: 100vh; }
+    #logo-esqueceu { flex: none; height: 280px; padding: 30px; }
+    #logo-esqueceu .diniz { font-size: 4.5rem; }
+    #logo-esqueceu p { display: none; }
+    .conteiner-esqueceu { padding: 40px 25px; align-items: flex-start; }
+    .botao-fechar { color: var(--branco); background: rgba(255, 255, 255, 0.2); }
+}

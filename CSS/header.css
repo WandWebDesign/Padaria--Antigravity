@@ -1,0 +1,405 @@
+/* =======================================================
+   VARIÁVEIS GLOBAIS - Padaria Artesanal
+======================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+:root {
+    /* Paleta Elegante */
+    --cafe-escuro: #4A3B32;    
+    --cafe-claro: #6D5445;     
+    --dourado-suave: #D4AF37;  
+    --creme-fundo: #FFF9F0;    
+    --branco: #FFFFFF;
+    
+    /* Configurações de Layout */
+    --header-height: 80px;
+    --borderadius: 12px;
+    --transicao: all 0.3s ease;
+}
+
+/* =======================================================
+   RESET GERAL
+======================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Garante que paddings não quebrem o tamanho das caixas */
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    background-color: var(--branco);
+    color: var(--cafe-escuro);
+    padding-top: var(--header-height); /* Espaço para não esconder o topo do site */
+    margin: 0;
+}
+
+/* =======================================================
+   CABEÇALHO PRINCIPAL (Barra Superior)
+======================================================= */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background-color: var(--branco);
+    height: var(--header-height);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04); /* Sombra super leve e difusa */
+    transition: var(--transicao);
+}
+
+.header section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    height: 100%;
+    gap: 2rem;
+}
+
+/* Logo e Nome da Padaria */
+.logo-e-marca {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.marca a {
+    font-family: 'Amatic SC', cursive;
+    font-size: 2.5rem;
+    color: var(--cafe-escuro);
+    letter-spacing: 1px;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+    display: block;
+}
+
+/* =======================================================
+   MENU PRINCIPAL E PESQUISA
+======================================================= */
+.menu-principal {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+/* Barra de Busca */
+/* Barra de Busca e Container Relativo */
+.busca-container {
+    flex-grow: 1;
+    max-width: 400px;
+    margin-right: 1rem;
+    position: relative; /* CRUCIAL: Mantém o menu suspenso preso à barra */
+}
+
+#input-busca {
+    width: 100%;
+    font-family: 'Nunito', sans-serif;
+    padding: 10px 20px;
+    border-radius: 30px;
+    background-color: #F8F5F2;
+    border: 1px solid transparent;
+    font-size: 1rem;
+    color: var(--cafe-escuro);
+    transition: var(--transicao);
+}
+
+#input-busca:focus {
+    border-color: var(--dourado-suave);
+    background-color: var(--branco);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+/* =======================================================
+   NOVO: MENU SUSPENSO DE PESQUISA (Dropdown)
+======================================================= */
+.busca-dropdown {
+    position: absolute;
+    top: 110%; /* Fica logo abaixo do input */
+    left: 0;
+    width: 100%;
+    background: var(--branco);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-height: 350px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none; /* Escondido por padrão */
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+/* Estilo de cada produto na lista */
+.item-busca {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    border-bottom: 1px solid rgba(0,0,0,0.03);
+}
+
+.item-busca:hover {
+    background: var(--creme-fundo);
+}
+
+.item-busca img {
+    width: 45px;
+    height: 45px;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.item-busca-info h4 {
+    margin: 0 0 3px 0;
+    color: var(--cafe-escuro);
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.item-busca-info span {
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.tag-agendavel { color: #4CAF50; } /* Verde para agendável */
+.tag-loja { color: #A89F98; } /* Cinza para itens normais */
+
+/* Links do Menu (Meus Pedidos, Login) */
+.menu-principal a {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--cafe-claro);
+    position: relative;
+    padding-bottom: 5px;
+    transition: var(--transicao);
+}
+
+/* Linha dourada que aparece ao passar o mouse */
+.menu-principal a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background-color: var(--dourado-suave);
+    transition: width 0.3s ease;
+}
+
+.menu-principal a:hover {
+    color: var(--dourado-suave);
+}
+
+.menu-principal a:hover::after {
+    width: 100%;
+}
+
+/* Botões do Menu (Carrinho e Tema) */
+#btn-tema, #btn-carrinho {
+    font-family: 'Nunito', sans-serif;
+    background: transparent;
+    color: var(--cafe-escuro);
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transicao);
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+#btn-carrinho:hover {
+    background-color: var(--creme-fundo);
+    color: var(--dourado-suave);
+}
+
+/* =======================================================
+   MENU DE CATEGORIAS (A barra secundária com os ícones)
+======================================================= */
+.menu-categorias {
+    background-color: var(--creme-fundo);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    position: sticky;
+    top: var(--header-height);
+    z-index: 98; /* Fica abaixo do z-index 100 do header principal */
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.02);
+    
+    /* ADICIONADO: Tempo da animação para quando ele esconder/aparecer */
+    transition: transform 0.4s cubic-bezier(0.3, 1, 0.3, 1);
+}
+
+/* CLASSE MÁGICA: O JavaScript vai adicionar isto para esconder o menu */
+.menu-categorias.esconder-menu {
+    /* Sobe o menu para fora da tela (vai deslizar por trás do header branco) */
+    transform: translateY(-150%);
+}
+
+.escolhas {
+    list-style-type: none;
+    display: flex;
+    
+    /* ALTERADO: De flex-start para center */
+    justify-content: center; 
+    
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 10px 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.escolhas::-webkit-scrollbar {
+    display: none;
+}
+
+.escolhas li {
+    flex-shrink: 0;
+    margin: 0 15px;
+}
+
+.escolhas a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--cafe-claro);
+    transition: var(--transicao);
+}
+
+/* Estilo elegante para os ícones redondos */
+.escolhas img {
+    background-color: var(--branco);
+    padding: 10px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(74, 59, 50, 0.08); /* Sombra suave de café */
+    transition: var(--transicao);
+    object-fit: contain;
+}
+
+/* Efeito Hover Refinado: Flutua para cima em vez de girar */
+.escolhas a:hover {
+    color: var(--dourado-suave);
+}
+
+.escolhas a:hover img {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(212, 175, 55, 0.2); /* Sombra dourada */
+}
+
+.escolhas p {
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* =======================================================
+   RESPONSIVIDADE (Tablets e Celulares)
+======================================================= */
+@media (max-width: 900px) {
+    .marca h1 {
+        display: none; /* Esconde o texto da marca para dar espaço à barra de busca em telas médias */
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        height: auto;
+        padding: 10px 0;
+        position: relative; /* Deixa rolar com a tela no mobile para ganhar espaço */
+    }
+
+    body {
+        padding-top: 0;
+    }
+
+    .header section {
+        flex-direction: column;
+        gap: 15px;
+        padding: 10px 1rem;
+    }
+
+    .menu-principal {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .busca-container {
+        max-width: 100%;
+        margin-right: 0;
+        order: 3; /* Joga a pesquisa para baixo dos botões no celular */
+    }
+
+    .menu-categorias {
+        top: 0;
+    }
+
+    .escolhas {
+        padding: 10px 1rem;
+    }
+
+    .escolhas img {
+        width: 45px;
+        height: 45px;
+        padding: 8px;
+    }
+
+    .escolhas p {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .escolhas {
+        /* No telemóvel, voltamos ao flex-start para permitir rolar a lista lateralmente sem cortar os itens da esquerda */
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Cabeçalho mais compacto */
+    .logo img {
+        height: 40px;
+    }
+
+    .marca h1 {
+        font-size: 1.8rem;
+    }
+
+    /* Ícones do menu de categorias menores */
+    .escolhas img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .escolhas p {
+        font-size: 0.8rem;
+    }
+    
+    .busca-container {
+        margin-top: 5px;
+    }
+}

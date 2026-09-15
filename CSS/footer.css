@@ -1,0 +1,243 @@
+/* =======================================================
+   VARIÁVEIS LOCAIS (Consistência Visual)
+======================================================= */
+:root {
+    --cafe-escuro: #4A3B32;    
+    --cafe-torrado: #2C1E16;   /* Um marrom quase preto para o rodapé */
+    --cafe-claro: #6D5445;     
+    --dourado-suave: #D4AF37;  
+    --creme-fundo: #FFF9F0;    
+    --branco: #FFFFFF;
+}
+
+/* =======================================================
+   ESTRUTURA PRINCIPAL DO RODAPÉ
+======================================================= */
+footer {
+    background-color: var(--cafe-torrado);
+    padding: 4rem 2rem 0 2rem;
+    font-family: 'Nunito', sans-serif;
+    color: var(--creme-fundo);
+    margin-top: 4rem;
+}
+
+.rodape-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 3rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 3rem;
+}
+
+/* Colunas do Rodapé */
+.rodape-menu,
+.rodape-sobre,
+.formulario-newsletter {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Títulos das Colunas */
+.rodape-menu h3,
+.rodape-sobre h3, 
+.formulario-newsletter h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--dourado-suave); /* Destaque em dourado */
+    font-weight: 800; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Listas e Links */
+.rodape-menu ul,
+.rodape-sobre ul {
+    list-style: none; 
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; 
+}
+
+.rodape-menu a,
+.rodape-sobre a {
+    color: #E8E0D5; /* Um creme levemente escurecido */
+    text-decoration: none;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+/* Efeito Hover nos Links */
+.rodape-menu a:hover,
+.rodape-sobre a:hover {
+    color: var(--dourado-suave);
+    transform: translateX(5px); /* Move levemente para a direita */
+}
+
+/* =======================================================
+   FORMULÁRIO DE NEWSLETTER
+======================================================= */
+.formulario-newsletter {
+    background-color: rgba(255, 255, 255, 0.05); /* Fundo translúcido elegante */
+    border: 1px solid rgba(212, 175, 55, 0.2); /* Borda levemente dourada */
+    border-radius: 16px;
+    padding: 25px;
+}
+
+.formulario-newsletter p {
+    font-size: 1rem;
+    color: #E8E0D5;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.formulario-newsletter form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.formulario-newsletter input[type="text"], 
+.formulario-newsletter input[type="tel"] {
+    font-family: 'Nunito', sans-serif;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--branco);
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.formulario-newsletter input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.formulario-newsletter input:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--dourado-suave);
+    box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+/* Botão Cadastrar */
+.formulario-newsletter button {
+    font-family: 'Nunito', sans-serif;
+    color: var(--cafe-torrado);
+    font-weight: 800;
+    background-color: var(--dourado-suave);
+    padding: 12px;
+    border-radius: 50px; /* Formato pílula */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 5px;
+}
+
+.formulario-newsletter button:hover {
+    background-color: var(--branco);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* =======================================================
+   FORMAS DE PAGAMENTO E COPYRIGHT
+======================================================= */
+.formas-pagamento {
+    text-align: center;
+    padding: 2rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.formas-pagamento h3 {
+    font-size: 1.2rem;
+    color: #E8E0D5;
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+}
+
+.formas-pagamento img {
+    max-width: 100%;
+    height: auto;    
+    width: 250px;   
+    background: var(--branco);
+    padding: 10px;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+#copyright {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* =======================================================
+   WHATSAPP FLUTUANTE
+======================================================= */
+.zap {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background-color: #25D366; /* Verde oficial do WhatsApp */
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
+    z-index: 999;
+}
+
+.zap img {
+    width: 35px;
+    height: auto;
+    filter: brightness(0) invert(1); /* Deixa o ícone branco */
+}
+
+.zap:hover {
+    transform: scale(1.1) translateY(-5px);
+    box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6);
+}
+
+/* =======================================================
+   RESPONSIVIDADE (Tablets e Celulares)
+======================================================= */
+@media (max-width: 768px) {
+    footer {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+        text-align: center;
+    }
+
+    .rodape-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 2.5rem;
+    }
+
+    .rodape-menu,
+    .rodape-sobre,
+    .formulario-newsletter {
+        width: 100%;
+        max-width: 350px;
+        align-items: center;
+    }
+
+    .rodape-menu a:hover,
+    .rodape-sobre a:hover {
+        transform: translateX(0); /* Remove o movimento lateral no celular */
+        color: var(--dourado-suave);
+    }
+}

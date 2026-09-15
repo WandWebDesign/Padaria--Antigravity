@@ -1,0 +1,233 @@
+/* =======================================================
+   REGRAS GERAIS E CONTAINER DO CARROSSEL
+======================================================= */
+:root {
+    --cafe-escuro: #4A3B32;    
+    --cafe-claro: #6D5445;     
+    --dourado-suave: #D4AF37;  
+    --creme-fundo: #FFF9F0;    
+    --branco: #FFFFFF;
+}
+
+/* Container Mestre que segura a track e botões */
+.grid-produtos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    margin: 0 auto 3rem auto;
+    position: relative;
+    padding: 0 10px; /* Pequeno respiro nas bordas */
+}
+
+/* =======================================================
+   A TRACK (O Carrinho de Compras / A Faixa que Rola)
+======================================================= */
+.carrossel-conjunto {
+    display: flex;
+    gap: 15px; /* Espaço entre os produtos */
+    width: 100%;
+    padding: 20px 0;
+    
+    /* A MÁGICA DO CSS SNAP (Rolagem Magnética) */
+    overflow-x: auto; /* Permite rolagem manual se o JS falhar */
+    scroll-behavior: smooth; /* Rolagem suave */
+    scroll-snap-type: x mandatory; /* Força o alinhamento horizontal */
+    
+    /* Esconde a barra de rolagem (cross-browser) */
+    -webkit-overflow-scrolling: touch; /* Melhora performance no iOS */
+}
+
+/* Escondendo a scrollbar padrão */
+.carrossel-conjunto::-webkit-scrollbar { display: none; }
+.carrossel-conjunto { -ms-overflow-style: none; scrollbar-width: none; }
+
+
+/* =======================================================
+   OS CARDS DE PRODUTOS (Responsividade Inteligente)
+======================================================= */
+.card-produtos {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--branco);
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+    text-align: center;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    
+    /* MÁGICA DO ALINHAMENTO DO SNAP */
+    scroll-snap-align: center; /* O card para sempre no centro da vista */
+    
+    /* RESPONSIVIDADE BASE (TELEMÓVEL/CELULAR) */
+    flex: 0 0 calc(100% - 30px); /* Mostra 1 item por vez no telemóvel */
+}
+
+/* RESPONSIVIDADE (TABLET) - Mostra 3 itens */
+@media (min-width: 600px) {
+    .card-produtos {
+        flex: 0 0 calc((100% / 3) - 15px); /* Mostra 3 itens */
+    }
+}
+
+/* RESPONSIVIDADE (DESKTOP) - Mostra 5 itens */
+@media (min-width: 1024px) {
+    .card-produtos {
+        flex: 0 0 calc((100% / 5) - 15px); /* Mostra 5 itens */
+    }
+}
+
+/* Efeito Hover nos Cards */
+.card-produtos:hover {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 10px 30px rgba(74, 59, 50, 0.1);
+}
+
+/* Restante do seu estilo de imagem, título e preço mantido... */
+.card-produtos img {
+    width: 100%;
+    max-width: 150px;
+    height: 150px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.card-produtos h4 {
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    color: var(--cafe-escuro);
+    margin: 5px 0;
+    font-weight: 800;
+}
+
+.card-produtos h5 {
+    font-size: 0.9rem;
+    color: var(--dourado-suave);
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+#texto-preço {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: var(--cafe-escuro);
+    font-size: 1.4rem;
+}
+
+#texto-info {
+    font-size: 0.8rem;
+    color: #A89F98;
+    margin-bottom: 15px;
+}
+
+/* =======================================================
+   OS BOTÕES (SETAS) GOURMET
+======================================================= */
+.botao-carrossel {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--branco);
+    color: var(--cafe-escuro);
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 2.5rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    opacity: 0.8; /* Ligeiramente transparente por padrão */
+}
+
+.botao-carrossel:hover {
+    opacity: 1;
+    background-color: var(--cafe-escuro);
+    color: var(--branco);
+    transform: translateY(-50%) scale(1.1);
+}
+
+.botao-antes { left: -25px; } /* Posicionado na borda do container */
+.botao-depois { right: -25px; }
+
+/* =======================================================
+   BOTÃO DE AGENDAR / COMPRAR (Design Premium)
+======================================================= */
+.botao-comprar, .btn-agendar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 12px 0; /* Mais "respiro" interno */
+    margin-top: auto; /* Empurra o botão sempre para o fundo do cartão */
+    
+    background-color: var(--dourado-suave);
+    color: var(--cafe-escuro);
+    
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem; /* Fonte maior e mais legível */
+    text-transform: uppercase;
+    letter-spacing: 1.5px; /* Espaço elegante entre as letras */
+    text-decoration: none;
+    
+    border-radius: 50px; /* Formato pílula totalmente arredondado */
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25); /* Sombra dourada suave */
+}
+
+/* Efeito ao passar o mouse por cima */
+.botao-comprar:hover, .btn-agendar:hover {
+    background-color: var(--cafe-escuro);
+    color: var(--branco);
+    box-shadow: 0 8px 20px rgba(74, 59, 50, 0.3); /* Sombra café mais profunda */
+    transform: translateY(-3px); /* Levanta um pouco mais */
+}
+
+/* Posicionamento dos botões em telas menores para não sair da tela */
+/* =======================================================
+   CARDS RESPONSIVOS - 2 POR LINHA NO MOBILE
+======================================================= */
+@media (max-width: 600px) {
+    .card-produtos {
+        /* Mostra 2 itens por vez com um pequeno respiro */
+        flex: 0 0 calc(50% - 10px); 
+        padding: 1rem;
+    }
+
+    .card-produtos img {
+        height: 100px; /* Imagem menor para caber no card lateral */
+        margin-bottom: 0.5rem;
+    }
+
+    .card-produtos h4 {
+        font-size: 0.95rem; /* Texto menor */
+        height: 2.4rem; /* Limita altura do título para alinhar botões */
+        overflow: hidden;
+    }
+
+    #texto-preço {
+        font-size: 1.1rem;
+    }
+
+    .botao-comprar, .btn-agendar {
+        padding: 8px 0;
+        font-size: 0.8rem; /* Botão mais delicado */
+    }
+    
+    /* Setas do carrossel menores no mobile */
+    .botao-carrossel {
+        width: 35px;
+        height: 35px;
+        font-size: 1.5rem;
+    }
+}

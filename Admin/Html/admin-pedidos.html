@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Padaria Diniz</title>
+    
+    <link rel="stylesheet" href="../../CSS/funcionalidades.css">
+    <link rel="stylesheet" href="../CSS/admin-style.css">
+</head>
+<body>
+    <div class="layout-admin">
+        
+        <aside class="sidebar-admin">
+            <div class="logo-admin">
+                <img src="../../Imagens/Logo.png" alt="Logo Diniz" style="width: 50px;">
+            </div>
+            <nav class="nav-circulos">
+                <button class="btn-circulo ativo" onclick="carregarSetorAdmin('padaria')" id="btn-padaria">
+                    <span class="icone">🥖</span><span class="texto-circulo">Padaria</span>
+                </button>
+                <button class="btn-circulo" onclick="carregarSetorAdmin('acougue')" id="btn-acougue">
+                    <span class="icone">🥩</span><span class="texto-circulo">Açougue</span>
+                </button>
+                <button class="btn-circulo" onclick="carregarSetorAdmin('hortifruti')" id="btn-hortifruti">
+                    <span class="icone">🥕</span><span class="texto-circulo">Hortifruti</span>
+                </button>
+                <button class="btn-circulo" onclick="carregarSetorAdmin('mercado')" id="btn-mercado">
+                    <span class="icone">🧺</span><span class="texto-circulo">Mercado</span>
+                </button>
+                
+                <div class="divisor-lateral"></div>
+                
+                <button class="btn-circulo" onclick="carregarSetorAdmin('pedidos')" id="btn-mercado">
+                    <span class="icone">📋</span><span class="texto-circulo">Pedidos</span>
+                </button>
+                
+                <button class="btn-circulo btn-futuro" title="Em breve">
+                    <span class="icone">📈</span><span class="texto-circulo">Vendas</span>
+                </button>
+            </nav>
+        </aside>
+
+        <main class="main-admin">
+            
+            <header class="topbar-admin">
+                <div class="titulo-setor-atual">
+                    <h1 id="titulo-setor-admin">Padaria</h1>
+                </div>
+
+                <div>
+                    <a href="../../padaria-landinpage.html" class="btn-circulo btn-voltar-loja" title="Sair do Painel">
+                    <span class="icone">↩️</span>
+                    <span class="texto-circulo">Voltar para Loja</span>
+                     </a>
+                </div>
+                
+            </header>
+
+            <section class="grid-admin" id="grid-admin-produtos">
+                
+            </section>  
+            
+            <header class="topbar-admin">
+                <div class="titulo-setor-atual">
+                    <h1>Gerenciar Pedidos</h1>
+                </div>
+                
+                <div class="busca-admin-container">
+                    <input type="text" placeholder="Buscar por Nº do pedido ou cliente...">
+                </div>
+            </header>
+
+            <section class="grid-admin">
+                
+                <div class="card-admin">
+                    <button class="btn-deletar-card" title="Cancelar Pedido">✖</button>
+                    <h5>Maria Oliveira • 15/04/2026</h5>
+                    <h3>Pedido #1042</h3>
+                    <div class="preco">R$ 84,50</div>
+                    <p style="color: var(--dourado-suave); font-weight: 800; margin-bottom: 15px;">Aguardando Preparo</p>
+                    <button class="btn-editar-card">Ver Detalhes</button>
+                </div>
+
+                <div class="card-admin">
+                    <button class="btn-deletar-card" title="Cancelar Pedido">✖</button>
+                    <h5>Carlos Mendes • 15/04/2026</h5>
+                    <h3>Pedido #1041</h3>
+                    <div class="preco">R$ 32,90</div>
+                    <p style="color: var(--cafe-claro); font-weight: 800; margin-bottom: 15px;">Em Preparo 👩‍🍳</p>
+                    <button class="btn-editar-card">Ver Detalhes</button>
+                </div>
+
+                <div class="card-admin">
+                    <button class="btn-deletar-card" title="Cancelar Pedido">✖</button>
+                    <h5>Ana Paula • 15/04/2026</h5>
+                    <h3>Pedido #1040</h3>
+                    <div class="preco">R$ 115,00</div>
+                    <p style="color: #5cb85c; font-weight: 800; margin-bottom: 15px;">Saiu para Entrega 🛵</p>
+                    <button class="btn-editar-card">Ver Detalhes</button>
+                </div>
+
+                <div class="card-admin" style="opacity: 0.7;">
+                    <h5>Roberto Silva • 14/04/2026</h5>
+                    <h3>Pedido #1039</h3>
+                    <div class="preco">R$ 55,00</div>
+                    <p style="color: var(--cafe-escuro); font-weight: 800; margin-bottom: 15px;">Concluído ✔️</p>
+                    <button class="btn-editar-card">Ver Recibo</button>
+                </div>
+
+            </section>
+        </main> 
+
+    </div>
+
+    <div id="modal-produto" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h2 id="modal-titulo">Adicionar Novo Produto</h2>
+            </div>
+            <div class="modal-body">
+                <form id="form-produto" class="form-admin">
+                    <input type="hidden" id="prod-id-original">
+                    
+                    <div class="linha-form">
+                        <div class="campo">
+                            <label>ID do Produto (Sem espaços):</label>
+                            <input type="text" id="prod-id" placeholder="Ex: paofrances" required>
+                        </div>
+                        <div class="campo">
+                            <label>Setor:</label>
+                            <select id="prod-setor" required>
+                                <option value="padaria">Padaria</option>
+                                <option value="acougue">Açougue</option>
+                                <option value="hortifruti">Hortifruti</option>
+                                <option value="mercado">Mercado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>Título do Produto:</label>
+                        <input type="text" id="prod-titulo" placeholder="Ex: Pão Francês Quentinho" required>
+                    </div>
+
+                    <div class="linha-form">
+                        <div class="campo">
+                            <label>Preço Principal:</label>
+                            <input type="text" id="prod-preco" placeholder="Ex: 15,90 / Kg" required>
+                        </div>
+                        <div class="campo">
+                            <label>Preço em Oferta (Opcional):</label>
+                            <input type="text" id="prod-oferta" placeholder="Ex: 12,90 / Kg">
+                        </div>
+                    </div>
+
+                    <div class="campo">
+                        <label>Fotos do Produto (Mínimo 4, Máximo 6):</label>
+                        <div class="area-upload">
+                            <input type="file" id="prod-imagens-input" accept="image/*" multiple hidden onchange="gerenciarUploadImagens(this)">
+                            <button type="button" class="btn-escolher-fotos" onclick="document.getElementById('prod-imagens-input').click()">
+                                <span>📸</span> Selecionar Fotos da Máquina
+                            </button>
+                            
+                            <div id="grid-previsualizacao" class="grid-previsualizacao">
+                                <p class="msg-vazia">Nenhuma foto selecionada (Mínimo 4 necessárias)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="campo-checkbox">
+                        <label><input type="checkbox" id="prod-tag-retiravel"> Disponível para Agendamento / Retirada</label>
+                        <label><input type="checkbox" id="prod-tag-oferta"> Marcar como Oferta da Semana</label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-salvar" onclick="salvarProduto()">Salvar Produto</button>
+                <button class="btn-cancelar" onclick="fecharModalProduto()">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-excluir" class="modal-overlay" style="display: none;">
+        <div class="modal-box modal-pequeno">
+            <div class="icone-alerta">⚠️</div>
+            <h2 class="titulo-excluir">Excluir Produto?</h2>
+            <p>Tem certeza que deseja apagar este produto permanentemente? Esta ação não pode ser desfeita.</p>
+            
+            <div class="modal-footer footer-excluir">
+                <button class="btn-cancelar" onclick="fecharModalExcluir()">Cancelar</button>
+                <button class="btn-excluir-confirmar" onclick="confirmarExclusao()">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+    <script src="../../Script/funcionalidades.js"></script>
+    <script src="../Script/admin-logic.js"></script>
+</body>
+</html>

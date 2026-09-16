@@ -322,7 +322,7 @@ app.post('/api/pedidos', async (req, res) => {
         const dataPedidoSQL = converterDataParaMySQL(dataPedido) || new Date().toISOString().split('T')[0];
         const dataRetiradaSQL = converterDataParaMySQL(dataRetirada);
 
-        // 1. Busca o ID numérico do Cliente cruzando as tabelas clientes e usuarios
+        // 1. Busca o ID numérico do Cliente
         const sqlBuscaCliente = `
             SELECT c.codigo_cliente 
             FROM clientes c
@@ -336,38 +336,69 @@ app.post('/api/pedidos', async (req, res) => {
         }
         const idCliente = buscaCliente[0].codigo_cliente;
 
-        // 2. Insere o Pedido com timestamp exato de criação (data_pedido) e última atualização (data_hora_atualizacao)
+        // 2. Valida Itens, Calcula Total Real e Desconta Estoque
+        let totalCalculado = 0;
+        const itensValidados = [];
+
+        for (let item of itens) {
+            const nomeItem = item.nome || item.tituloproduto; 
+            const qtde = item.quantidade || 1;
+
+            const [buscaProduto] = await conexao.query(
+                `SELECT codigo_produto, valor, preco_oferta, quantidade_estoque FROM produtos WHERE nome = ? LIMIT 1`, 
+                [nomeItem]
+            );
+            
+            if (buscaProduto.length === 0) {
+                throw new Error(`O produto '${nomeItem}' não existe no banco de dados!`);
+            }
+
+            const produtoDB = buscaProduto[0];
+            
+            // Validação de Estoque
+            if (produtoDB.quantidade_estoque < qtde) {
+                throw new Error(`Estoque insuficiente para '${nomeItem}'. Pedido: ${qtde}, Estoque: ${produtoDB.quantidade_estoque}`);
+            }
+
+            // Seleção do Preço (Prioriza Oferta se for maior que 0)
+            const precoUnit = (produtoDB.preco_oferta && produtoDB.preco_oferta > 0) ? produtoDB.preco_oferta : produtoDB.valor;
+            const subtotal = precoUnit * qtde;
+            totalCalculado += subtotal;
+
+            // Desconta o estoque no banco imediatamente (já dentro da transaction)
+            await conexao.query(
+                `UPDATE produtos SET quantidade_estoque = quantidade_estoque - ? WHERE codigo_produto = ?`,
+                [qtde, produtoDB.codigo_produto]
+            );
+
+            itensValidados.push({
+                idProduto: produtoDB.codigo_produto,
+                qtde: qtde,
+                precoUnit: precoUnit,
+                subtotal: subtotal
+            });
+        }
+
+        // 3. Insere o Pedido com o Total Calculado pelo Backend
         const sqlPedido = `
             INSERT INTO pedidos 
             (codigo_cliente, situacao, total, data_pedido, data_hora_atualizacao, data_retirada, hora_retirada, codigo_retirada, forma_pagto, excluido) 
             VALUES (?, 'Pendente', ?, NOW(), NOW(), ?, ?, ?, ?, FALSE)`;
 
         const [resultadoPedido] = await conexao.query(sqlPedido, [
-            idCliente, valorTotal, dataRetiradaSQL, horaRetirada, id, pagamento
+            idCliente, totalCalculado, dataRetiradaSQL, horaRetirada, id, pagamento
         ]);
         const idPedidoGerado = resultadoPedido.insertId;
 
-        // 3. Insere os Itens do Pedido (com validação de existência)
-        for (let item of itens) {
-            const nomeItem = item.nome || item.tituloproduto; 
-            const [buscaProduto] = await conexao.query(`SELECT codigo_produto, valor FROM produtos WHERE nome = ? LIMIT 1`, [nomeItem]);
-            
-            if (buscaProduto.length === 0) {
-                throw new Error(`O produto '${nomeItem}' tentou ser comprado, mas não existe na tabela produtos do MySQL!`);
-            }
-
-            const idProduto = buscaProduto[0].codigo_produto; 
-            const precoUnit = buscaProduto[0].valor;
-            const qtde = item.quantidade || 1;
-            const subtotal = precoUnit * qtde;
-
-            const sqlItens = `INSERT INTO itens_pedidos (codigo_pedido, codigo_produto, quantidade, preco_unitario, subtotal) VALUES (?, ?, ?, ?, ?)`;
-            await conexao.query(sqlItens, [idPedidoGerado, idProduto, qtde, precoUnit, subtotal]);
+        // 4. Insere os Itens do Pedido na tabela auxiliar
+        const sqlItens = `INSERT INTO itens_pedidos (codigo_pedido, codigo_produto, quantidade, preco_unitario, subtotal) VALUES (?, ?, ?, ?, ?)`;
+        for (let itemVal of itensValidados) {
+            await conexao.query(sqlItens, [idPedidoGerado, itemVal.idProduto, itemVal.qtde, itemVal.precoUnit, itemVal.subtotal]);
         }
 
         // Salva a transação e finaliza
         await conexao.commit();
-        res.status(201).json({ mensagem: "Pedido gravado com sucesso!", id_pedido: idPedidoGerado });
+        res.status(201).json({ mensagem: "Pedido gravado com sucesso!", id_pedido: idPedidoGerado, totalPago: totalCalculado });
 
     } catch (erro) {
         if (conexao) await conexao.rollback();

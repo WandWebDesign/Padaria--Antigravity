@@ -83,7 +83,36 @@ async function carregarTela() {
         imgMini.style.objectFit = 'cover';
         imgMini.style.borderRadius = '8px';
         imgMini.style.border = '2px solid var(--dourado-suave)'; // Já deixa selecionado
+        imgMini.style.border = '2px solid var(--dourado-suave)'; // Já deixa selecionado
         containerMiniaturas.appendChild(imgMini);
+    }
+    
+    // INICIALIZAÇÃO DO CALENDÁRIO E HORÁRIOS
+    const inputData = document.getElementById("data-agendamento-produto");
+    const selectHora = document.getElementById("hora-agendamento-produto");
+    if (inputData && selectHora) {
+        // Data mínima = amanhã
+        const amanha = new Date();
+        amanha.setDate(amanha.getDate() + 1);
+        inputData.min = amanha.toISOString().split('T')[0];
+
+        // Gera horários das 07:30 às 20:00
+        const slots = [];
+        let h = 7, m = 30;
+        while (h < 20 || (h === 20 && m === 0)) {
+            const hh = String(h).padStart(2, '0');
+            const mm = String(m).padStart(2, '0');
+            slots.push(`${hh}:${mm}`);
+            m += 30;
+            if (m >= 60) { m -= 60; h++; }
+        }
+
+        slots.forEach(horario => {
+            const opt = document.createElement("option");
+            opt.value = horario;
+            opt.innerText = horario;
+            selectHora.appendChild(opt);
+        });
     }
 }
 
@@ -142,10 +171,34 @@ btnAdicionar.addEventListener("click", () => {
         return;
     }
 
+    const dataInput = document.getElementById("data-agendamento-produto");
+    const horaInput = document.getElementById("hora-agendamento-produto");
+    
+    let dataEscolhida = null;
+    let horaEscolhida = null;
+    
+    if (dataInput && horaInput) {
+        dataEscolhida = dataInput.value;
+        horaEscolhida = horaInput.value;
+        
+        if (!dataEscolhida) {
+            mostrarToast("Por favor, selecione a data de retirada.");
+            return;
+        }
+        if (!horaEscolhida) {
+            mostrarToast("Por favor, selecione o horário de retirada.");
+            return;
+        }
+    }
+
     let carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
     
-    // Procura se o item já existe no carrinho
-    const indexExistente = carrinhoAtual.findIndex(item => item.id === produtoAtual.codigo_produto);
+    // Procura se o item já existe no carrinho PARA A MESMA DATA E HORA
+    const indexExistente = carrinhoAtual.findIndex(item => 
+        item.id === produtoAtual.codigo_produto &&
+        item.dataRetirada === dataEscolhida &&
+        item.horaRetirada === horaEscolhida
+    );
     
     if (indexExistente !== -1) {
         // Se já existe, soma as quantidades
@@ -153,7 +206,7 @@ btnAdicionar.addEventListener("click", () => {
         
         // Verifica se a NOVA quantidade total passa do estoque
         if (novaQuantidade > produtoAtual.quantidade_estoque) {
-            mostrarToast(`Erro: Você já tem ${carrinhoAtual[indexExistente].quantidade} deste item no carrinho. Temos apenas ${produtoAtual.quantidade_estoque} no estoque.`);
+            mostrarToast(`Erro: Você já tem ${carrinhoAtual[indexExistente].quantidade} deste item no carrinho para essa data. Temos apenas ${produtoAtual.quantidade_estoque} no estoque.`);
             return;
         }
         
@@ -167,8 +220,8 @@ btnAdicionar.addEventListener("click", () => {
             quantidade: quantidade,
             imagem: produtoAtual.imagem_url,
             quantidade_estoque_real: produtoAtual.quantidade_estoque, 
-            dataRetirada: null,  
-            horaRetirada: null   
+            dataRetirada: dataEscolhida,  
+            horaRetirada: horaEscolhida   
         };
         carrinhoAtual.push(itemParaCarrinho);
     }

@@ -142,19 +142,37 @@ btnAdicionar.addEventListener("click", () => {
         return;
     }
 
-    const itemParaCarrinho = {
-        id: produtoAtual.codigo_produto,
-        nome: produtoAtual.nome,
-        preco: precoVigente,
-        quantidade: quantidade,
-        imagem: produtoAtual.imagem_url,
-        quantidade_estoque_real: produtoAtual.quantidade_estoque, 
-        dataRetirada: null,  
-        horaRetirada: null   
-    };
-
     let carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
-    carrinhoAtual.push(itemParaCarrinho);
+    
+    // Procura se o item já existe no carrinho
+    const indexExistente = carrinhoAtual.findIndex(item => item.id === produtoAtual.codigo_produto);
+    
+    if (indexExistente !== -1) {
+        // Se já existe, soma as quantidades
+        const novaQuantidade = carrinhoAtual[indexExistente].quantidade + quantidade;
+        
+        // Verifica se a NOVA quantidade total passa do estoque
+        if (novaQuantidade > produtoAtual.quantidade_estoque) {
+            mostrarToast(`Erro: Você já tem ${carrinhoAtual[indexExistente].quantidade} deste item no carrinho. Temos apenas ${produtoAtual.quantidade_estoque} no estoque.`);
+            return;
+        }
+        
+        carrinhoAtual[indexExistente].quantidade = novaQuantidade;
+    } else {
+        // Se não existe, cria um novo objeto
+        const itemParaCarrinho = {
+            id: produtoAtual.codigo_produto,
+            nome: produtoAtual.nome,
+            preco: precoVigente,
+            quantidade: quantidade,
+            imagem: produtoAtual.imagem_url,
+            quantidade_estoque_real: produtoAtual.quantidade_estoque, 
+            dataRetirada: null,  
+            horaRetirada: null   
+        };
+        carrinhoAtual.push(itemParaCarrinho);
+    }
+
     localStorage.setItem('carrinho', JSON.stringify(carrinhoAtual));
 
     mostrarToast(`✅ ${produtoAtual.nome} adicionado! Agende a retirada no carrinho.`);

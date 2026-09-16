@@ -147,7 +147,7 @@ btnAdicionar.addEventListener("click", () => {
         nome: produtoAtual.nome,
         preco: precoVigente,
         quantidade: quantidade,
-        imagem: produtoAtual.imagem,
+        imagem: produtoAtual.imagem_url,
         quantidade_estoque_real: produtoAtual.quantidade_estoque, 
         dataRetirada: null,  
         horaRetirada: null   

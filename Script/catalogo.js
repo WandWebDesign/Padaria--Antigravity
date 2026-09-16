@@ -269,7 +269,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const paramSetor = urlParams.get("setor");
     const paramFiltro = urlParams.get("filtro");
     
-    if (paramSetor) setorAtual = paramSetor.toLowerCase();
+    if (paramSetor) {
+        const setorRaw = paramSetor.toLowerCase();
+        // Mapeamento especial para links do menu que apontam categorias como setores
+        const subcategoriasMercearia = ["doces", "bebidas", "pets", "limpeza", "laticínios", "laticinios", "frios"];
+        
+        if (subcategoriasMercearia.includes(setorRaw)) {
+            setorAtual = "mercearia";
+            categoriaAtual = setorRaw;
+        } else {
+            setorAtual = setorRaw;
+        }
+    }
+
     if (paramFiltro) {
         if (paramFiltro === "oferta" || paramFiltro === "retiravel") {
             setorAtual = paramFiltro.toLowerCase();

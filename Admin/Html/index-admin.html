@@ -116,16 +116,10 @@
                     <div class="linha-form">
                         <div class="campo">
                             <label>Categoria:</label>
-                            <select id="prod-categoria" required>
-                                <option value="padaria">Padaria</option>
-                                <option value="frios">Frios</option>
-                                <option value="hortifruti">Hortifruti</option>
-                                <option value="mercearia">Mercearia</option>
-                                <option value="bebidas">Bebidas</option>
-                                <option value="limpeza">Limpeza</option>
-                                <option value="pets">Pets</option>
-                                <option value="doces">Doces</option>
-                            </select>
+                            <input type="text" id="prod-categoria" list="lista-categorias" placeholder="Selecione ou digite uma nova..." required>
+                            <datalist id="lista-categorias">
+                                <!-- Preenchido dinamicamente via JS -->
+                            </datalist>
                         </div>
                     </div>
 

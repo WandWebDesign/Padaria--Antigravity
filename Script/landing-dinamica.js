@@ -33,8 +33,8 @@ function criarCardHTML(produto, idCarrossel) {
         precoSecundario = `<p id="texto-info" style="text-decoration: line-through;">R$ ${precoFormatado}${unidade}</p>`;
     }
 
-    // A imagem agora já vem convertida em Base64 direto do MySQL
-    let imagemSrc = produto.imagem_base64 || "./Imagens/Logo.png";
+    // A imagem agora vem da pasta uploads do servidor
+    let imagemSrc = produto.imagem_url || "./Imagens/Logo.png";
 
     let botaoHTML = "";
     // O banco retorna 1 para true em campos booleanos.

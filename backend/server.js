@@ -113,6 +113,26 @@ app.get('/api/produtos', async (req, res) => {
 });
 
 // ==========================================
+// ROTA DE CATEGORIAS (FILTROS DINÂMICOS)
+// ==========================================
+app.get('/api/categorias', async (req, res) => {
+    try {
+        const [results] = await db.query(`
+            SELECT DISTINCT categoria 
+            FROM produtos 
+            WHERE categoria IS NOT NULL AND categoria != ''
+            ORDER BY categoria ASC
+        `);
+        // Extrai apenas os nomes em um array simples de strings
+        const categorias = results.map(row => row.categoria);
+        res.status(200).json(categorias);
+    } catch (err) {
+        console.error("Erro ao buscar categorias:", err);
+        res.status(500).json({ erro: "Erro ao buscar categorias." });
+    }
+});
+
+// ==========================================
 // ROTAS DO PAINEL ADMIN (CRUD)
 // ==========================================
 

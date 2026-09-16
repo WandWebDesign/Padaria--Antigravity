@@ -42,9 +42,13 @@ function criarCardHTML(produto, idCarrossel) {
         botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="botao-comprar" style="text-decoration: none;" aria-label="Agendar ${produto.nome} para retirada">Adicionar</a>`;
     }
 
+    const marcaTexto = (produto.marca && produto.marca.trim() !== "") ? produto.marca : "Fabricação Própria";
+    const tagMarcaHTML = `<p style="font-size: 0.75rem; color: #A89F98; margin: 0 0 2px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">${marcaTexto}</p>`;
+
     return `
         <article class="card-produtos">
             <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
+            ${tagMarcaHTML}
             <h4>${produto.nome}</h4>
             <h5>${nomeSetor}</h5>
             <p class="texto-preco">R$ ${precoPrincipal}</p>

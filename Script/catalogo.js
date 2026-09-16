@@ -270,15 +270,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const paramFiltro = urlParams.get("filtro");
     
     if (paramSetor) {
-        const setorRaw = paramSetor.toLowerCase();
-        // Mapeamento especial para links do menu que apontam categorias como setores
-        const subcategoriasMercearia = ["doces", "bebidas", "pets", "limpeza", "laticínios", "laticinios", "frios"];
+        let setorRaw = paramSetor.toLowerCase();
         
-        if (subcategoriasMercearia.includes(setorRaw)) {
-            setorAtual = "mercearia";
-            categoriaAtual = setorRaw;
+        // Mapeamentos específicos por erros de plural ou categorias
+        if (setorRaw === "doces") setorRaw = "doce";
+        if (setorRaw === "frios") {
+            setorAtual = "acougue"; // Frios fica no açougue
+            categoriaAtual = "frios";
         } else {
-            setorAtual = setorRaw;
+            const subcategoriasMercearia = ["doce", "bebidas", "pets", "limpeza", "laticínios", "laticinios"];
+            
+            if (subcategoriasMercearia.includes(setorRaw)) {
+                setorAtual = "mercearia";
+                categoriaAtual = setorRaw;
+            } else {
+                setorAtual = setorRaw;
+            }
         }
     }
 

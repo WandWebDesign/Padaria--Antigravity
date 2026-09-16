@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2/promise'); // Importante: usar a versão com /promise
+const mysql = require('mysql2/promise'); // Importante: usar a versão com /promis
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');

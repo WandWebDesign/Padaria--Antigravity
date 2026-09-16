@@ -282,7 +282,7 @@ async function pesquisarProdutos() {
                 div.className = 'item-busca';
                 
                 // Pega a imagem em Base64 que veio do banco
-                let imagemSrc = prod.imagem_base64 || "./Imagens/Logo.png";
+                let imagemSrc = prod.imagem_url || "./Imagens/Logo.png";
 
                 // Verifica se o produto é retirável no banco de dados (MySQL retorna 1 para true)
                 const podeAgendar = prod.is_retiravel === 1;

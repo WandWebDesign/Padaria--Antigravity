@@ -308,9 +308,9 @@ function converterDataParaMySQL(data) {
 // 1. ROTA: SALVAR NOVO PEDIDO (Checkout -> Banco)
 // =======================================================
 app.post('/api/pedidos', async (req, res) => {
-    const { id, cliente, dataPedido, valorTotal, pagamento, dataRetirada, horaRetirada, itens } = req.body;
+    const { cliente, dataPedido, pagamento, itens } = req.body;
 
-    if (!id || !itens || itens.length === 0) {
+    if (!itens || itens.length === 0) {
         return res.status(400).json({ erro: "Dados do pedido ausentes." });
     }
 
@@ -320,7 +320,6 @@ app.post('/api/pedidos', async (req, res) => {
         await conexao.beginTransaction();
 
         const dataPedidoSQL = converterDataParaMySQL(dataPedido) || new Date().toISOString().split('T')[0];
-        const dataRetiradaSQL = converterDataParaMySQL(dataRetirada);
 
         // 1. Busca o ID numérico do Cliente
         const sqlBuscaCliente = `
@@ -336,69 +335,99 @@ app.post('/api/pedidos', async (req, res) => {
         }
         const idCliente = buscaCliente[0].codigo_cliente;
 
-        // 2. Valida Itens, Calcula Total Real e Desconta Estoque
-        let totalCalculado = 0;
-        const itensValidados = [];
-
+        // 2. Agrupa os itens por data e hora de retirada
+        const gruposPedidos = {};
         for (let item of itens) {
-            const nomeItem = item.nome || item.tituloproduto; 
-            const qtde = item.quantidade || 1;
-
-            const [buscaProduto] = await conexao.query(
-                `SELECT codigo_produto, valor, preco_oferta, quantidade_estoque FROM produtos WHERE nome = ? LIMIT 1`, 
-                [nomeItem]
-            );
-            
-            if (buscaProduto.length === 0) {
-                throw new Error(`O produto '${nomeItem}' não existe no banco de dados!`);
+            const chaveGrupo = `${item.dataRetirada}_${item.horaRetirada}`;
+            if (!gruposPedidos[chaveGrupo]) {
+                gruposPedidos[chaveGrupo] = {
+                    dataRetirada: item.dataRetirada,
+                    horaRetirada: item.horaRetirada,
+                    itens: []
+                };
             }
-
-            const produtoDB = buscaProduto[0];
-            
-            // Validação de Estoque
-            if (produtoDB.quantidade_estoque < qtde) {
-                throw new Error(`Estoque insuficiente para '${nomeItem}'. Pedido: ${qtde}, Estoque: ${produtoDB.quantidade_estoque}`);
-            }
-
-            // Seleção do Preço (Prioriza Oferta se for maior que 0)
-            const precoUnit = (produtoDB.preco_oferta && produtoDB.preco_oferta > 0) ? produtoDB.preco_oferta : produtoDB.valor;
-            const subtotal = precoUnit * qtde;
-            totalCalculado += subtotal;
-
-            // Desconta o estoque no banco imediatamente (já dentro da transaction)
-            await conexao.query(
-                `UPDATE produtos SET quantidade_estoque = quantidade_estoque - ? WHERE codigo_produto = ?`,
-                [qtde, produtoDB.codigo_produto]
-            );
-
-            itensValidados.push({
-                idProduto: produtoDB.codigo_produto,
-                qtde: qtde,
-                precoUnit: precoUnit,
-                subtotal: subtotal
-            });
+            gruposPedidos[chaveGrupo].itens.push(item);
         }
 
-        // 3. Insere o Pedido com o Total Calculado pelo Backend
-        const sqlPedido = `
-            INSERT INTO pedidos 
-            (codigo_cliente, situacao, total, data_pedido, data_hora_atualizacao, data_retirada, hora_retirada, codigo_retirada, forma_pagto, excluido) 
-            VALUES (?, 'Pendente', ?, NOW(), NOW(), ?, ?, ?, ?, FALSE)`;
+        const idsPedidosGerados = [];
+        let totalPagoGeral = 0;
 
-        const [resultadoPedido] = await conexao.query(sqlPedido, [
-            idCliente, totalCalculado, dataRetiradaSQL, horaRetirada, id, pagamento
-        ]);
-        const idPedidoGerado = resultadoPedido.insertId;
+        // 3. Processa cada grupo como um pedido independente
+        for (let chave in gruposPedidos) {
+            const grupo = gruposPedidos[chave];
+            let totalCalculado = 0;
+            const itensValidados = [];
 
-        // 4. Insere os Itens do Pedido na tabela auxiliar
-        const sqlItens = `INSERT INTO itens_pedidos (codigo_pedido, codigo_produto, quantidade, preco_unitario, subtotal) VALUES (?, ?, ?, ?, ?)`;
-        for (let itemVal of itensValidados) {
-            await conexao.query(sqlItens, [idPedidoGerado, itemVal.idProduto, itemVal.qtde, itemVal.precoUnit, itemVal.subtotal]);
+            // Valida itens, recalcula total e desconta estoque
+            for (let item of grupo.itens) {
+                const nomeItem = item.nome || item.tituloproduto; 
+                const qtde = item.quantidade || 1;
+
+                const [buscaProduto] = await conexao.query(
+                    `SELECT codigo_produto, valor, preco_oferta, quantidade_estoque FROM produtos WHERE nome = ? LIMIT 1`, 
+                    [nomeItem]
+                );
+                
+                if (buscaProduto.length === 0) {
+                    throw new Error(`O produto '${nomeItem}' não existe no banco de dados!`);
+                }
+
+                const produtoDB = buscaProduto[0];
+                
+                if (produtoDB.quantidade_estoque < qtde) {
+                    throw new Error(`Estoque insuficiente para '${nomeItem}'. Pedido: ${qtde}, Estoque: ${produtoDB.quantidade_estoque}`);
+                }
+
+                const precoUnit = (produtoDB.preco_oferta && produtoDB.preco_oferta > 0) ? produtoDB.preco_oferta : produtoDB.valor;
+                const subtotal = precoUnit * qtde;
+                totalCalculado += subtotal;
+
+                await conexao.query(
+                    `UPDATE produtos SET quantidade_estoque = quantidade_estoque - ? WHERE codigo_produto = ?`,
+                    [qtde, produtoDB.codigo_produto]
+                );
+
+                itensValidados.push({
+                    idProduto: produtoDB.codigo_produto,
+                    qtde: qtde,
+                    precoUnit: precoUnit,
+                    subtotal: subtotal
+                });
+            }
+
+            // Insere o Pedido
+            const dataRetiradaSQL = converterDataParaMySQL(grupo.dataRetirada);
+            const horaRetirada = grupo.horaRetirada;
+            
+            // Gera um código único baseado no timestamp para este sub-pedido
+            const codigo = 'PED-' + Date.now().toString().slice(-6) + '-' + Math.floor(Math.random() * 100);
+
+            const sqlPedido = `
+                INSERT INTO pedidos 
+                (codigo_cliente, situacao, total, data_pedido, data_hora_atualizacao, data_retirada, hora_retirada, codigo_retirada, forma_pagto, excluido) 
+                VALUES (?, 'Pendente', ?, NOW(), NOW(), ?, ?, ?, ?, FALSE)`;
+
+            const [resultadoPedido] = await conexao.query(sqlPedido, [
+                idCliente, totalCalculado, dataRetiradaSQL, horaRetirada, codigo, pagamento
+            ]);
+            const idPedidoGerado = resultadoPedido.insertId;
+            idsPedidosGerados.push(codigo);
+            totalPagoGeral += totalCalculado;
+
+            // Insere os Itens do Pedido na tabela auxiliar
+            const sqlItens = `INSERT INTO itens_pedidos (codigo_pedido, codigo_produto, quantidade, preco_unitario, subtotal) VALUES (?, ?, ?, ?, ?)`;
+            for (let itemVal of itensValidados) {
+                await conexao.query(sqlItens, [idPedidoGerado, itemVal.idProduto, itemVal.qtde, itemVal.precoUnit, itemVal.subtotal]);
+            }
         }
 
         // Salva a transação e finaliza
         await conexao.commit();
-        res.status(201).json({ mensagem: "Pedido gravado com sucesso!", id_pedido: idPedidoGerado, totalPago: totalCalculado });
+        res.status(201).json({ 
+            mensagem: "Pedido(s) gravado(s) com sucesso!", 
+            pedidosGerados: idsPedidosGerados, 
+            totalPago: totalPagoGeral 
+        });
 
     } catch (erro) {
         if (conexao) await conexao.rollback();

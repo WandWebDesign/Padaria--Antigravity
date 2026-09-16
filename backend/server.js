@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const mysql = require('mysql2/promise'); // Importante: usar a versão com /promis
+const mysql = require('mysql2/promise'); // Importante: usar a versão com /promise
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
@@ -99,13 +99,15 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/produtos', async (req, res) => {
     try {
         const [results] = await db.query(`
-            SELECT p.*, s.nome AS nome_setor, i.imagem_url
+            SELECT p.*, s.nome AS nome_setor,
+                   (SELECT i.imagem_url FROM imagens_produtos i WHERE i.codigo_produto = p.codigo_produto LIMIT 1) AS imagem_url
             FROM produtos p
             JOIN setor s ON p.codigo_setor = s.codigo_setor
-            LEFT JOIN imagens_produtos i ON p.codigo_produto = i.codigo_produto
+            ORDER BY p.codigo_produto ASC
         `);
         res.status(200).json(results);
     } catch (err) {
+        console.error("Erro ao buscar produtos:", err);
         res.status(500).json({ erro: "Erro ao buscar catálogo." });
     }
 });
@@ -116,7 +118,7 @@ app.get('/api/produtos', async (req, res) => {
 
 // ADICIONAR
 app.post('/api/produtos', upload.array('imagens', 5), async (req, res) => {
-    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria } = req.body;
+    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria, marca } = req.body;
     try {
         const [resSetor] = await db.query('SELECT codigo_setor FROM setor WHERE nome = ?', [setor]);
         const codigoSetor = resSetor[0].codigo_setor;
@@ -124,8 +126,8 @@ app.post('/api/produtos', upload.array('imagens', 5), async (req, res) => {
         const isRet = (is_retiravel === 'true' || is_retiravel === '1' || is_retiravel === 1) ? 1 : 0;
 
         const [resProd] = await db.query(
-            'INSERT INTO produtos (codigo_setor, nome, valor, preco_custo, preco_oferta, is_retiravel, quantidade_estoque, unidade_medida, categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [codigoSetor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria]
+            'INSERT INTO produtos (codigo_setor, nome, valor, preco_custo, preco_oferta, is_retiravel, quantidade_estoque, unidade_medida, categoria, marca) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [codigoSetor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria, marca || null]
         );
         
         const codigoProduto = resProd.insertId;
@@ -144,14 +146,14 @@ app.post('/api/produtos', upload.array('imagens', 5), async (req, res) => {
 
 // EDITAR
 app.put('/api/produtos/:id', upload.array('imagens', 5), async (req, res) => {
-    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria } = req.body;
+    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria, marca } = req.body;
     try {
         const [resSetor] = await db.query('SELECT codigo_setor FROM setor WHERE nome = ?', [setor]);
         
         const isRet = (is_retiravel === 'true' || is_retiravel === '1' || is_retiravel === 1) ? 1 : 0;
 
-        await db.query('UPDATE produtos SET codigo_setor=?, nome=?, valor=?, preco_custo=?, preco_oferta=?, is_retiravel=?, quantidade_estoque=?, unidade_medida=?, categoria=? WHERE codigo_produto=?',
-            [resSetor[0].codigo_setor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria, req.params.id]);
+        await db.query('UPDATE produtos SET codigo_setor=?, nome=?, valor=?, preco_custo=?, preco_oferta=?, is_retiravel=?, quantidade_estoque=?, unidade_medida=?, categoria=?, marca=? WHERE codigo_produto=?',
+            [resSetor[0].codigo_setor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria, marca || null, req.params.id]);
 
         if (req.files && req.files.length > 0) {
             await db.query('DELETE FROM imagens_produtos WHERE codigo_produto = ?', [req.params.id]);
@@ -173,9 +175,11 @@ app.put('/api/produtos/:id', upload.array('imagens', 5), async (req, res) => {
 // EXCLUIR
 app.delete('/api/produtos/:id', async (req, res) => {
     try {
+        await db.query('DELETE FROM imagens_produtos WHERE codigo_produto = ?', [req.params.id]);
         await db.query('DELETE FROM produtos WHERE codigo_produto = ?', [req.params.id]);
         res.status(200).json({ mensagem: 'Excluído!' });
     } catch (err) {
+        console.error("Erro ao excluir produto:", err);
         res.status(500).json({ erro: 'Erro ao excluir.' });
     }
 });
@@ -564,4 +568,3 @@ app.delete('/api/admin/pedidos/concluidos', async (req, res) => {
 //npm install express mysql2 cors
 //node migrarProdutos.js (Apenas caso ja n tenha feito uma vez - Uma só vez é necessária)
 //node server.js
-

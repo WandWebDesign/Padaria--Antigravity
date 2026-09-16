@@ -73,18 +73,29 @@
                     </div>
                 </div>
 
-                <!-- Aviso informativo: o agendamento acontece no carrinho -->
-                <div style="
+                <div class="bloco-agendamento" style="
                     margin-top: 20px;
-                    padding: 12px 16px;
+                    padding: 16px;
                     background: #FFF8EC;
-                    border-left: 4px solid var(--dourado-suave, #C8973D);
-                    border-radius: 8px;
-                    font-size: 0.92rem;
-                    color: #4A3B32;
-                    font-weight: 700;
+                    border: 2px solid #C8973D;
+                    border-radius: 12px;
                 ">
-                    📅 Após adicionar ao carrinho, você poderá <strong>agendar a data e horário de retirada</strong> diretamente na página de finalização do pedido.
+                    <h3 style="font-family: 'Nunito', sans-serif; font-size: 1rem; font-weight: 800; color: #4A3B32; margin: 0 0 14px;">📅 Agendamento</h3>
+                    
+                    <label style="display: block; font-size: 0.85rem; font-weight: 800; color: #4A3B32; margin-bottom: 5px;">Data de Retirada</label>
+                    <input type="date" id="data-agendamento-produto" style="
+                        width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid #D4C5A9;
+                        font-family: 'Nunito', sans-serif; font-size: 0.95rem; background: white; margin-bottom: 12px; cursor: pointer;
+                    ">
+
+                    <label style="display: block; font-size: 0.85rem; font-weight: 800; color: #4A3B32; margin-bottom: 5px;">Horário de Retirada</label>
+                    <select id="hora-agendamento-produto" style="
+                        width: 100%; padding: 10px 12px; border-radius: 8px; border: 1.5px solid #D4C5A9;
+                        font-family: 'Nunito', sans-serif; font-size: 0.95rem; background: white; cursor: pointer;
+                    ">
+                        <option value="">Selecione...</option>
+                        <!-- Gerado por JS -->
+                    </select>
                 </div>
 
                 <div class="btn-baixo">

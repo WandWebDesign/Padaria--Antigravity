@@ -89,8 +89,8 @@ function renderizarProdutos(lista) {
             precoHTML = `<div class="card-precos"><p class="preco-normal">R$ ${precoFormatado}${unidade}</p></div>`;
         }
 
-        // Lógica de Imagem (Agora usamos a string Base64 que veio do banco)
-        let imagemSrc = produto.imagem_base64 || "./Imagens/Logo.png";
+        // Lógica de Imagem (Agora usamos a URL da imagem armazenada no servidor)
+        let imagemSrc = produto.imagem_url || "./Imagens/Logo.png";
 
         // Booleanos vindos do MySQL são lidos como 1 (true) ou 0 (false)
         const ehRetiravel = produto.is_retiravel === 1;

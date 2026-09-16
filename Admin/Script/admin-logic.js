@@ -4,6 +4,7 @@
 
 let setorAdminAtual = 'padaria'; 
 let imagensTemporarias = []; 
+let imagensRemovidas = false; 
 
 // TRAVA DE SEGURANÇA
 document.addEventListener('DOMContentLoaded', () => {
@@ -113,7 +114,7 @@ function desenharGradeAdmin(produtos) {
             precoDisplay = `R$ ${precoDisplay}`;
         }
 
-        const imagemCapa = prod.imagem_base64 || "../../Imagens/Logo.png";
+        const imagemCapa = prod.imagem_url || "../../Imagens/Logo.png";
         
         // Passa o objeto inteiro formatado como JSON para facilitar a edição
         const jsonProd = encodeURIComponent(JSON.stringify(prod));
@@ -173,12 +174,9 @@ function gerenciarUploadImagens(input) {
     const arquivos = Array.from(input.files);
 
     arquivos.forEach(arquivo => {
-        const leitor = new FileReader();
-        leitor.onload = function(e) {
-            imagensTemporarias.push(e.target.result);
-            renderizarPreviews();
-        };
-        leitor.readAsDataURL(arquivo);
+        const urlObj = URL.createObjectURL(arquivo);
+        imagensTemporarias.push({ url: urlObj, file: arquivo });
+        renderizarPreviews();
     });
     input.value = ""; 
 }
@@ -194,13 +192,13 @@ function renderizarPreviews() {
         return;
     }
 
-    imagensTemporarias.forEach((foto, index) => {
+    imagensTemporarias.forEach((obj, index) => {
         const div = document.createElement('div');
         div.className = 'foto-preview';
         div.style.position = 'relative'; // Garante o posicionamento do botão X
         
         div.innerHTML = `
-            <img src="${foto}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
+            <img src="${obj.url}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px;">
             <button type="button" 
                     class="btn-remover-foto" 
                     onclick="removerFotoTemporaria(${index})"
@@ -213,7 +211,10 @@ function renderizarPreviews() {
 }
 
 function removerFotoTemporaria(index) {
-    imagensTemporarias.splice(index, 1);
+    const removida = imagensTemporarias.splice(index, 1)[0];
+    if (removida && !removida.file) {
+        imagensRemovidas = true;
+    }
     renderizarPreviews();
 }
 
@@ -224,6 +225,7 @@ function abrirModalProduto() {
     document.getElementById('prod-setor').value = setorAdminAtual; 
     
     imagensTemporarias = [];
+    imagensRemovidas = false;
     renderizarPreviews();
 
     document.getElementById('modal-produto').style.display = 'flex';
@@ -262,8 +264,9 @@ function abrirModalEditar(jsonProdutoCodificado) {
 
     // Carrega a imagem do banco para o array temporário
     imagensTemporarias = [];
-    if (prod.imagem_base64) {
-        imagensTemporarias.push(prod.imagem_base64);
+    imagensRemovidas = false;
+    if (prod.imagem_url) {
+        imagensTemporarias.push({ url: prod.imagem_url, file: null });
     }
     renderizarPreviews();
 
@@ -296,17 +299,22 @@ async function salvarProduto() {
     const valorDecimal = parseFloat(precoBruto.replace(',', '.').trim());
     let precoOfertaDecimal = ofertaBruta ? parseFloat(ofertaBruta.replace(',', '.').trim()) : null;
 
-    const payload = {
-        setor,
-        nome: titulo,
-        valor: valorDecimal,
-        preco_oferta: precoOfertaDecimal,
-        quantidade_estoque: estoqueDigitado,
-        is_retiravel: isRetiravel,
-        unidade_medida: unidadeMedida,
-        categoria: categoria,
-        imagens: imagensTemporarias 
-    };
+    const formData = new FormData();
+    formData.append('setor', setor);
+    formData.append('nome', titulo);
+    formData.append('valor', valorDecimal);
+    if(precoOfertaDecimal !== null) formData.append('preco_oferta', precoOfertaDecimal);
+    formData.append('quantidade_estoque', estoqueDigitado);
+    formData.append('is_retiravel', isRetiravel);
+    formData.append('unidade_medida', unidadeMedida);
+    formData.append('categoria', categoria);
+    formData.append('remove_imagens', imagensRemovidas);
+
+    imagensTemporarias.forEach(obj => {
+        if (obj.file) {
+            formData.append('imagens', obj.file);
+        }
+    });
 
     try {
         const url = id ? `/api/produtos/${id}` : '/api/produtos';
@@ -314,8 +322,7 @@ async function salvarProduto() {
 
         const resposta = await fetch(url, {
             method: metodo,
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
+            body: formData
         });
 
         if (resposta.ok) {

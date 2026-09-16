@@ -2,8 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const mysql = require('mysql2/promise'); // Importante: usar a versão com /promise
 const cors = require('cors');
-
+const multer = require('multer');
 const path = require('path');
+
+// Configuração do Multer para armazenamento local
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join(__dirname, 'uploads'));
+    },
+    filename: function (req, file, cb) {
+        const extensao = file.originalname.split('.').pop();
+        cb(null, `produto_${Date.now()}_${Math.floor(Math.random() * 1000)}.${extensao}`);
+    }
+});
+const upload = multer({ storage: storage });
 
 const app = express();
 app.use(cors());
@@ -12,9 +24,21 @@ app.use(express.json({ limit: '50mb' }));
 // Servir os arquivos do front-end (HTML, CSS, JS, Imagens)
 app.use(express.static(path.join(__dirname, '../')));
 
+// Servir os arquivos de upload
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Rota inicial apontando para a Landing Page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../padaria-landinpage.html'));
+});
+
+// Rotas diretas e tolerantes a maiúsculas/minúsculas para o Painel Admin
+app.get(['/admin', '/Admin', '/Admin/HTML/index-admin.html', '/Admin/Html/index-admin.html', '/admin/html/index-admin.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../Admin/Html/index-admin.html'));
+});
+
+app.get(['/admin/pedidos', '/Admin/HTML/admin-pedidos.html', '/Admin/Html/admin-pedidos.html', '/admin/html/admin-pedidos.html'], (req, res) => {
+    res.sendFile(path.join(__dirname, '../Admin/Html/admin-pedidos.html'));
 });
 
 // Configurar o Pool de conexão (suporta ambiente local, Render e AWS RDS)
@@ -75,7 +99,7 @@ app.post('/api/login', async (req, res) => {
 app.get('/api/produtos', async (req, res) => {
     try {
         const [results] = await db.query(`
-            SELECT p.*, s.nome AS nome_setor, i.imagem_base64
+            SELECT p.*, s.nome AS nome_setor, i.imagem_url
             FROM produtos p
             JOIN setor s ON p.codigo_setor = s.codigo_setor
             LEFT JOIN imagens_produtos i ON p.codigo_produto = i.codigo_produto
@@ -91,45 +115,57 @@ app.get('/api/produtos', async (req, res) => {
 // ==========================================
 
 // ADICIONAR
-app.post('/api/produtos', async (req, res) => {
-    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, imagens, unidade_medida, categoria } = req.body;
+app.post('/api/produtos', upload.array('imagens', 5), async (req, res) => {
+    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria } = req.body;
     try {
         const [resSetor] = await db.query('SELECT codigo_setor FROM setor WHERE nome = ?', [setor]);
         const codigoSetor = resSetor[0].codigo_setor;
+        
+        const isRet = (is_retiravel === 'true' || is_retiravel === '1' || is_retiravel === 1) ? 1 : 0;
 
         const [resProd] = await db.query(
             'INSERT INTO produtos (codigo_setor, nome, valor, preco_custo, preco_oferta, is_retiravel, quantidade_estoque, unidade_medida, categoria) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [codigoSetor, nome, valor, preco_custo || 0.00, preco_oferta || null, is_retiravel, quantidade_estoque, unidade_medida, categoria]
+            [codigoSetor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria]
         );
         
         const codigoProduto = resProd.insertId;
-        if (imagens) {
-            for (let img of imagens) {
-                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_base64) VALUES (?, ?)', [codigoProduto, img]);
+        if (req.files && req.files.length > 0) {
+            for (let file of req.files) {
+                const url = `/uploads/${file.filename}`;
+                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [codigoProduto, url]);
             }
         }
         res.status(201).json({ mensagem: 'Sucesso!' });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ erro: 'Erro ao salvar.' });
     }
 });
 
 // EDITAR
-app.put('/api/produtos/:id', async (req, res) => {
-    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, imagens, unidade_medida, categoria } = req.body;
+app.put('/api/produtos/:id', upload.array('imagens', 5), async (req, res) => {
+    const { setor, nome, valor, preco_custo, preco_oferta, quantidade_estoque, is_retiravel, unidade_medida, categoria } = req.body;
     try {
         const [resSetor] = await db.query('SELECT codigo_setor FROM setor WHERE nome = ?', [setor]);
-        await db.query('UPDATE produtos SET codigo_setor=?, nome=?, valor=?, preco_custo=?, preco_oferta=?, is_retiravel=?, quantidade_estoque=?, unidade_medida=?, categoria=? WHERE codigo_produto=?',
-            [resSetor[0].codigo_setor, nome, valor, preco_custo || 0.00, preco_oferta || null, is_retiravel, quantidade_estoque, unidade_medida, categoria, req.params.id]);
+        
+        const isRet = (is_retiravel === 'true' || is_retiravel === '1' || is_retiravel === 1) ? 1 : 0;
 
-        if (imagens) {
+        await db.query('UPDATE produtos SET codigo_setor=?, nome=?, valor=?, preco_custo=?, preco_oferta=?, is_retiravel=?, quantidade_estoque=?, unidade_medida=?, categoria=? WHERE codigo_produto=?',
+            [resSetor[0].codigo_setor, nome, valor, preco_custo || 0.00, preco_oferta || null, isRet, quantidade_estoque || 0, unidade_medida, categoria, req.params.id]);
+
+        if (req.files && req.files.length > 0) {
             await db.query('DELETE FROM imagens_produtos WHERE codigo_produto = ?', [req.params.id]);
-            for (let img of imagens) {
-                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_base64) VALUES (?, ?)', [req.params.id, img]);
+            for (let file of req.files) {
+                const url = `/uploads/${file.filename}`;
+                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [req.params.id, url]);
             }
+        } else if (req.body.remove_imagens === 'true') {
+             // Caso o usuario tenha deletado a foto na interface
+             await db.query('DELETE FROM imagens_produtos WHERE codigo_produto = ?', [req.params.id]);
         }
         res.status(200).json({ mensagem: 'Atualizado!' });
     } catch (err) {
+        console.error(err);
         res.status(500).json({ erro: 'Erro ao atualizar.' });
     }
 });

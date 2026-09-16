@@ -90,29 +90,72 @@ async function carregarTela() {
     // INICIALIZAÇÃO DO CALENDÁRIO E HORÁRIOS
     const inputData = document.getElementById("data-agendamento-produto");
     const selectHora = document.getElementById("hora-agendamento-produto");
+    
     if (inputData && selectHora) {
-        // Data mínima = amanhã
-        const amanha = new Date();
-        amanha.setDate(amanha.getDate() + 1);
-        inputData.min = amanha.toISOString().split('T')[0];
+        const hoje = new Date();
+        
+        // Data Mínima = Hoje
+        const dataMinimaStr = hoje.toISOString().split('T')[0];
+        inputData.min = dataMinimaStr;
+        
+        // Data Máxima = 30 dias a partir de hoje
+        const dataMaxima = new Date(hoje);
+        dataMaxima.setDate(hoje.getDate() + 30);
+        inputData.max = dataMaxima.toISOString().split('T')[0];
 
-        // Gera horários das 07:30 às 20:00
-        const slots = [];
-        let h = 7, m = 30;
-        while (h < 20 || (h === 20 && m === 0)) {
-            const hh = String(h).padStart(2, '0');
-            const mm = String(m).padStart(2, '0');
-            slots.push(`${hh}:${mm}`);
-            m += 30;
-            if (m >= 60) { m -= 60; h++; }
-        }
+        // Função que gera os horários dinamicamente dependendo da data escolhida
+        const atualizarHorarios = () => {
+            selectHora.innerHTML = '<option value="">Selecione...</option>';
+            const dataEscolhida = inputData.value;
+            
+            if (!dataEscolhida) return;
+            
+            const ehHoje = (dataEscolhida === dataMinimaStr);
+            const agora = new Date();
+            // Padaria precisa de 2h de antecedência mínima para produtos do dia
+            const horaCorteH = agora.getHours() + 2; 
+            const horaCorteM = agora.getMinutes();
 
-        slots.forEach(horario => {
-            const opt = document.createElement("option");
-            opt.value = horario;
-            opt.innerText = horario;
-            selectHora.appendChild(opt);
-        });
+            const slots = [];
+            let h = 7, m = 30; // Horário de funcionamento: 07:30 às 20:00
+            
+            while (h < 20 || (h === 20 && m === 0)) {
+                // Se for hoje, só libera os horários que forem maiores que a hora de corte
+                let liberarHorario = true;
+                if (ehHoje) {
+                    if (h < horaCorteH || (h === horaCorteH && m <= horaCorteM)) {
+                        liberarHorario = false;
+                    }
+                }
+                
+                if (liberarHorario) {
+                    const hh = String(h).padStart(2, '0');
+                    const mm = String(m).padStart(2, '0');
+                    slots.push(`${hh}:${mm}`);
+                }
+                
+                m += 30;
+                if (m >= 60) { m -= 60; h++; }
+            }
+
+            if (slots.length === 0 && ehHoje) {
+                const opt = document.createElement("option");
+                opt.value = "";
+                opt.innerText = "Sem horários p/ hoje (Escolha amanhã)";
+                selectHora.appendChild(opt);
+                return;
+            }
+
+            slots.forEach(horario => {
+                const opt = document.createElement("option");
+                opt.value = horario;
+                opt.innerText = horario;
+                selectHora.appendChild(opt);
+            });
+        };
+
+        // Quando o usuário muda a data, recalcula os horários
+        inputData.addEventListener('change', atualizarHorarios);
     }
 }
 

@@ -9,7 +9,6 @@ const filtroDaUrl = urlParams.get("filtro");
 // ELEMENTOS DO DOM E VARIÁVEIS GLOBAIS
 // =======================================================
 const containerProdutos = document.getElementById("container-produtos");
-const tituloSetor = document.getElementById("titulo-setor");
 const barraBusca = document.getElementById("barra-busca");
 let botoesFiltro = document.querySelectorAll(".btn-filtro");
 

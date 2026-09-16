@@ -68,7 +68,7 @@ async function carregarTela() {
     const imgPrincipal = document.getElementById('produtoimagem');
     const containerMiniaturas = document.getElementById('container-miniaturas');
     
-    let imagemSrc = produtoAtual.imagem_base64 || "./Imagens/Logo.png";
+    let imagemSrc = produtoAtual.imagem_url || "./Imagens/Logo.png";
 
     if (imgPrincipal) imgPrincipal.src = imagemSrc;
     

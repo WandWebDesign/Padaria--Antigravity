@@ -105,8 +105,11 @@ function atualizarInterfaceCarrinho() {
         const infoAgendamento = item.dataRetirada 
             ? `<div style="font-size: 0.85rem; color: var(--dourado-suave); margin-top: 4px; font-weight: 800;">📅 Retirar dia: ${item.dataRetirada}</div>` 
             : '';
+            
+        const imagemSrc = item.imagem ? (item.imagem.includes('/') ? item.imagem : 'Imagens/' + item.imagem) : 'Imagens Secundarias/Bolo.svg';
 
         div.innerHTML = `
+            <img src="${imagemSrc}" alt="${item.nome}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; margin-right: 15px;">
             <div style="flex: 1;">
                 <span style="font-weight: 800; display: block; font-size: 1.1rem;">${item.nome}</span>
                 <span style="font-size: 0.9rem; color: #A89F98;">Qtd: ${qtd} x R$ ${item.preco.toFixed(2).replace('.', ',')}</span>

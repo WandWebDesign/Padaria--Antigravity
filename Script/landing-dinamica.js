@@ -93,8 +93,8 @@ async function carregarLandingPage() {
         popularCarrossel("carrossel-açougue", todosProdutos.filter(p => p.nome_setor === "acougue"));
         popularCarrossel("carrossel-hortifruti", todosProdutos.filter(p => p.nome_setor === "hortifruti"));
         
-        // Ajuste: Produtos de mercado ou mercearia
-        popularCarrossel("carrossel-mercearia", todosProdutos.filter(p => p.nome_setor === "mercado" || p.categoria === "mercearia"));
+        // Ajuste: Produtos de mercearia
+        popularCarrossel("carrossel-mercearia", todosProdutos.filter(p => p.nome_setor === "mercearia"));
 
     } catch (erro) {
         console.error("Erro na Landing Page:", erro);

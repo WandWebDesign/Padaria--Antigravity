@@ -23,8 +23,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const setorDesejado = urlParams.get("setor");
+    carregarCategoriasAdmin();
     carregarSetorAdmin(setorDesejado || setorAdminAtual);
 });
+
+async function carregarCategoriasAdmin() {
+    try {
+        const resposta = await fetch('/api/categorias');
+        const categorias = await resposta.json();
+        const datalist = document.getElementById('lista-categorias');
+        if (datalist) {
+            datalist.innerHTML = '';
+            categorias.forEach(cat => {
+                if(cat) {
+                    datalist.innerHTML += `<option value="${cat}"></option>`;
+                }
+            });
+        }
+    } catch (erro) {
+        console.error("Erro ao carregar categorias:", erro);
+    }
+}
 
 // =======================================================
 // LER (Busca na API)

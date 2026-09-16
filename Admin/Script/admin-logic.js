@@ -252,6 +252,14 @@ function abrirModalEditar(jsonProdutoCodificado) {
         document.getElementById('prod-oferta').value = "";
     }
 
+    if (prod.preco_custo) {
+        document.getElementById('prod-custo').value = parseFloat(prod.preco_custo).toFixed(2).replace('.', ',');
+    } else {
+        document.getElementById('prod-custo').value = "";
+    }
+    
+    document.getElementById('prod-marca').value = prod.marca || "";
+
     // Marca a caixinha de unidade correta
     if (prod.unidade_medida) {
         document.getElementById('prod-unidade').value = prod.unidade_medida;
@@ -290,6 +298,8 @@ async function salvarProduto() {
     const categoria = document.getElementById('prod-categoria').value;
     const estoqueDigitado = parseInt(document.getElementById('prod-estoque').value) || 0;
     const isRetiravel = document.getElementById('prod-tag-retiravel').checked ? 1 : 0;
+    const marca = document.getElementById('prod-marca').value.trim();
+    const custoBruto = document.getElementById('prod-custo').value;
 
     if(!titulo || !precoBruto) {
         alert("Preencha o Título e o Preço Principal!");
@@ -298,6 +308,7 @@ async function salvarProduto() {
 
     const valorDecimal = parseFloat(precoBruto.replace(',', '.').trim());
     let precoOfertaDecimal = ofertaBruta ? parseFloat(ofertaBruta.replace(',', '.').trim()) : null;
+    let precoCustoDecimal = custoBruto ? parseFloat(custoBruto.replace(',', '.').trim()) : null;
 
     const formData = new FormData();
     formData.append('setor', setor);
@@ -308,6 +319,8 @@ async function salvarProduto() {
     formData.append('is_retiravel', isRetiravel);
     formData.append('unidade_medida', unidadeMedida);
     formData.append('categoria', categoria);
+    formData.append('marca', marca);
+    if(precoCustoDecimal !== null) formData.append('preco_custo', precoCustoDecimal);
     formData.append('remove_imagens', imagensRemovidas);
 
     imagensTemporarias.forEach(obj => {

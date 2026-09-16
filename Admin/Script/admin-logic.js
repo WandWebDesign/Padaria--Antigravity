@@ -197,7 +197,7 @@ function gerenciarUploadImagens(input) {
         imagensTemporarias.push({ url: urlObj, file: arquivo });
         renderizarPreviews();
     });
-    input.value = ""; 
+    // Removido input.value = "" para evitar perda de referencia do arquivo em alguns navegadores
 }
 
 function renderizarPreviews() {

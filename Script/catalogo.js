@@ -98,10 +98,14 @@ function renderizarProdutos(lista) {
         let cardInternoHTML = "";
         let botaoHTML = "";
 
+        const marcaTexto = (produto.marca && produto.marca.trim() !== "") ? produto.marca : "Fabricação Própria";
+        const tagMarcaHTML = `<p style="font-size: 0.75rem; color: #A89F98; margin: 0 0 2px 0; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">${marcaTexto}</p>`;
+
         if (ehRetiravel) {
             cardInternoHTML = `
                 <a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="card-produto" aria-label="Ver detalhes de ${produto.nome}">
                     <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
+                    ${tagMarcaHTML}
                     <h3>${produto.nome}</h3>
                 </a>`;
             botaoHTML = `<a href="pagina-agendamento.html?id=${produto.codigo_produto}" class="btn-agendar" aria-label="Agendar ${produto.nome} para retirada">Adicionar</a>`;
@@ -109,6 +113,7 @@ function renderizarProdutos(lista) {
             cardInternoHTML = `
                 <div class="card-produto card-visualizavel">
                     <img src="${imagemSrc}" alt="Foto de ${produto.nome}" loading="lazy">
+                    ${tagMarcaHTML}
                     <h3>${produto.nome}</h3>
                 </div>`;
             botaoHTML = `<span class="btn-indisponivel" aria-label="${produto.nome} disponível apenas na loja física">Disponível na loja</span>`;

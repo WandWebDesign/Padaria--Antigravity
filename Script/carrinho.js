@@ -37,38 +37,7 @@ function getDataMinima() {
    ATUALIZA O BADGE NOS CARDS AO VIVO (sem re-renderizar)
 ======================================================= */
 function atualizarBadgesRetirada() {
-    const dataVal = document.getElementById('data-pedido-global')?.value || '';
-    const horaVal = document.getElementById('hora-pedido-global')?.value || '';
-
-    document.querySelectorAll('.badge-retirada-item').forEach(badge => {
-        if (dataVal && horaVal) {
-            const dataFmt = dataVal.split('-').reverse().join('/');
-            badge.innerHTML = `✅ Retirada: <strong>${dataFmt}</strong> às <strong>${horaVal}</strong>`;
-            badge.style.color = '#4A7C59';
-        } else if (dataVal) {
-            badge.innerHTML = `⏰ Data: <strong>${dataVal.split('-').reverse().join('/')}</strong> — falta escolher o horário`;
-            badge.style.color = '#C8973D';
-        } else {
-            badge.innerHTML = `📅 Aguardando agendamento no painel ao lado`;
-            badge.style.color = '#A89F98';
-        }
-    });
-
-    const aviso = document.getElementById('aviso-agendamento-resumo');
-    if (!aviso) return;
-
-    if (dataVal && horaVal) {
-        const dataFmt = dataVal.split('-').reverse().join('/');
-        aviso.innerHTML = `✅ <strong>Retirada agendada:</strong> ${dataFmt} às ${horaVal}`;
-        aviso.style.background    = '#EAF7EE';
-        aviso.style.borderColor   = '#4A7C59';
-        aviso.style.color         = '#4A7C59';
-    } else {
-        aviso.innerHTML = `⚠️ Escolha a <strong>data</strong> e o <strong>horário</strong> de retirada para todos os itens.`;
-        aviso.style.background    = '#FFF8EC';
-        aviso.style.borderColor   = '#C8973D';
-        aviso.style.color         = '#7A5C2E';
-    }
+    // Removida a atualização global de badges (agora a data vem de cada item)
 }
 
 /* =======================================================
@@ -116,8 +85,8 @@ function renderizarPaginaCarrinho() {
                         font-size: 0.88rem;
                         font-weight: 700;
                         font-family: 'Nunito', sans-serif;
-                        color: #A89F98;
-                    ">📅 Aguardando agendamento no painel ao lado</span>
+                        color: #4A7C59;
+                    ">📅 Retirada: ${item.dataRetirada.split('-').reverse().join('/')} às ${item.horaRetirada}</span>
                 </div>
                 <div class="acoes-produto">
                     <span class="subtotal-item">${formatarDinheiroCheckout(subtotal)}</span>
@@ -127,10 +96,7 @@ function renderizarPaginaCarrinho() {
         `;
     });
 
-    /* ---- Opções de horário como <option> ---- */
-    const opcoesHorario = HORARIOS_DISPONIVEIS
-        .map(h => `<option value="${h}">${h}</option>`)
-        .join('');
+    /* ---- Opções de horário removidas do resumo ---- */
 
     /* ---- Coluna direita: agendamento + pagamento + totais ---- */
     containerResumo.innerHTML = `
@@ -145,97 +111,7 @@ function renderizarPaginaCarrinho() {
             <span>${formatarDinheiroCheckout(valorTotal)}</span>
         </div>
 
-        <!-- ===== BLOCO DE AGENDAMENTO ÚNICO PARA TODOS OS ITENS ===== -->
-        <div style="
-            margin: 18px 0;
-            padding: 16px;
-            background: #FFF8EC;
-            border: 2px solid #C8973D;
-            border-radius: 12px;
-        ">
-            <h3 style="
-                font-family: 'Nunito', sans-serif;
-                font-size: 1rem;
-                font-weight: 800;
-                color: #4A3B32;
-                margin: 0 0 4px;
-            ">📅 Agendamento de Retirada</h3>
-            <p style="
-                font-size: 0.82rem;
-                color: #7A6A5A;
-                margin: 0 0 14px;
-                font-family: 'Nunito', sans-serif;
-            ">Todos os itens deste pedido serão retirados juntos.</p>
-
-            <label style="
-                display: block;
-                font-size: 0.85rem;
-                font-weight: 800;
-                color: #4A3B32;
-                margin-bottom: 5px;
-                font-family: 'Nunito', sans-serif;
-            ">Data de Retirada</label>
-            <input
-                type="date"
-                id="data-pedido-global"
-                min="${getDataMinima()}"
-                onchange="atualizarBadgesRetirada()"
-                style="
-                    width: 100%;
-                    box-sizing: border-box;
-                    padding: 10px 12px;
-                    border-radius: 8px;
-                    border: 1.5px solid #D4C5A9;
-                    font-family: 'Nunito', sans-serif;
-                    font-size: 0.95rem;
-                    color: #4A3B32;
-                    background: white;
-                    margin-bottom: 12px;
-                    cursor: pointer;
-                "
-            >
-
-            <label style="
-                display: block;
-                font-size: 0.85rem;
-                font-weight: 800;
-                color: #4A3B32;
-                margin-bottom: 5px;
-                font-family: 'Nunito', sans-serif;
-            ">Horário de Retirada</label>
-            <select
-                id="hora-pedido-global"
-                onchange="atualizarBadgesRetirada()"
-                style="
-                    width: 100%;
-                    box-sizing: border-box;
-                    padding: 10px 12px;
-                    border-radius: 8px;
-                    border: 1.5px solid #D4C5A9;
-                    font-family: 'Nunito', sans-serif;
-                    font-size: 0.95rem;
-                    color: #4A3B32;
-                    background: white;
-                    cursor: pointer;
-                "
-            >
-                <option value="" disabled selected>— Escolha um horário —</option>
-                ${opcoesHorario}
-            </select>
-
-            <div id="aviso-agendamento-resumo" style="
-                margin-top: 12px;
-                padding: 10px 12px;
-                background: #FFF8EC;
-                border-left: 4px solid #C8973D;
-                border-radius: 8px;
-                font-size: 0.85rem;
-                font-weight: 700;
-                color: #7A5C2E;
-                font-family: 'Nunito', sans-serif;
-                transition: all 0.3s ease;
-            ">⚠️ Escolha a <strong>data</strong> e o <strong>horário</strong> de retirada para todos os itens.</div>
-        </div>
+        <!-- Agendamento removido (agora é por item) -->
         <!-- ============================================================ -->
 
         <!-- FORMAS DE PAGAMENTO -->
@@ -332,24 +208,13 @@ function finalizarCompra(valorTotal, totalItens) {
         return;
     }
 
-    // 1. CORREÇÃO: Captura os IDs corretos gerados dinamicamente no HTML
-    const dataInput = document.getElementById('data-pedido-global')?.value;
-    const horaEscolhida = document.getElementById('hora-pedido-global')?.value;
-    
     // Captura o input de rádio que estiver marcado
     const formaPagamento = document.querySelector('input[name="pagamento-checkout"]:checked');
     const pagamentoEscolhido = formaPagamento ? formaPagamento.value : null;
 
-    if (!dataInput) { alert("Por favor, escolha uma data para retirada."); return; }
-    if (!horaEscolhida) { alert("Por favor, escolha um horário para retirada."); return; }
     if (!pagamentoEscolhido) { alert("Por favor, selecione a forma de pagamento."); return; }
 
-    // Formata a data de YYYY-MM-DD para DD/MM/YYYY de forma segura
-    const dataFormatada = dataInput.split('-').reverse().join('/');
     const dataHoje = new Date().toLocaleDateString('pt-BR');
-
-    // Gera um código único baseado no timestamp
-    const codigo = 'PED-' + Date.now().toString().slice(-6);
 
     let carrinhoAtual = JSON.parse(localStorage.getItem('carrinho')) || [];
     
@@ -357,14 +222,11 @@ function finalizarCompra(valorTotal, totalItens) {
     const emailDoCliente = localStorage.getItem('emailUsuario') || 'Cliente Desconhecido';
 
     const novoPedidoAdmin = {
-        id: codigo,
         cliente: emailDoCliente, 
         dataPedido: dataHoje,
         itens: carrinhoAtual,
         valorTotal: valorTotal,
-        pagamento: pagamentoEscolhido,
-        dataRetirada: dataFormatada,
-        horaRetirada: horaEscolhida
+        pagamento: pagamentoEscolhido
     };
 
     // Envia o payload direto para a API Node
@@ -380,8 +242,9 @@ function finalizarCompra(valorTotal, totalItens) {
         }
         return resposta.json();
     })
-    .then(() => {
+    .then(dados => {
         // Mostra o modal de sucesso na tela apenas se salvou com sucesso no MySQL
+        const codigo = dados.pedidosGerados ? dados.pedidosGerados.join(', ') : 'N/A';
         document.getElementById('display-codigo').innerText  = codigo;
         document.getElementById('modal-qtd').innerText       = totalItens + ' un';
         document.getElementById('modal-total').innerText     = formatarDinheiroCheckout(valorTotal);

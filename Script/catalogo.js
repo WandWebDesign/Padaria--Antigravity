@@ -37,8 +37,8 @@ function nomeCategoria(categoria) {
 // =======================================================
 async function carregarProdutosDoBanco() {
     try {
-        // Pede os dados para a sua API Node.js (vamos criar essa rota no backend no próximo passo)
-        const resposta = await fetch('/api/produtos');
+        const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000';
+        const resposta = await fetch(`${API_BASE}/api/produtos`);
         
         // Converte a resposta do banco para um Array de Objetos (JSON)
         listaCompleta = await resposta.json(); 
@@ -298,7 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Carrega tudo
-    fetch('/api/produtos')
+    const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000';
+    fetch(`${API_BASE}/api/produtos`)
         .then(res => res.json())
         .then(dados => {
             listaCompleta = dados;

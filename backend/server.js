@@ -117,20 +117,25 @@ app.post('/api/cadastro', async (req, res) => {
 // ==========================================
 app.post('/api/login', async (req, res) => {
     try {
-        const { email, senha } = req.body;
+        const email = req.body.email ? req.body.email.trim().toLowerCase() : '';
+        const senha = req.body.senha ? req.body.senha.trim() : '';
+
         if (!email || !senha) {
             return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' });
         }
+
+        console.log(`🔑 [LOGIN] Tentativa para o e-mail: '${email}'`);
 
         const [results] = await db.query(
             `SELECT u.codigo_usuario, u.email, u.senha, u.tipo_usuario, c.nome 
              FROM usuarios u 
              LEFT JOIN clientes c ON u.codigo_usuario = c.codigo_usuario 
-             WHERE u.email = ? LIMIT 1`, 
+             WHERE LOWER(TRIM(u.email)) = ? LIMIT 1`, 
             [email]
         );
         
         if (results.length === 0) {
+            console.log(`❌ [LOGIN] E-mail não encontrado no banco: '${email}'`);
             return res.status(401).json({ erro: 'Email ou senha incorretos.' });
         }
 
@@ -148,6 +153,7 @@ app.post('/api/login', async (req, res) => {
                 try {
                     const novoHash = await bcrypt.hash(senha, 10);
                     await db.query("UPDATE usuarios SET senha = ? WHERE codigo_usuario = ?", [novoHash, usuario.codigo_usuario]);
+                    console.log(`🛡️ [SEGURANÇA] Senha legada de '${usuario.email}' migrada para hash bcrypt com sucesso.`);
                 } catch (eMigracao) {
                     console.error("Falha ao migrar senha legada:", eMigracao);
                 }
@@ -155,6 +161,7 @@ app.post('/api/login', async (req, res) => {
         }
 
         if (senhaValida) {
+            console.log(`✅ [LOGIN] Sucesso para: '${usuario.email}' (${usuario.tipo_usuario})`);
             res.status(200).json({ 
                 mensagem: 'Login efetuado!', 
                 tipo_usuario: usuario.tipo_usuario,
@@ -162,6 +169,7 @@ app.post('/api/login', async (req, res) => {
                 nome: usuario.nome || usuario.email.split('@')[0]
             });
         } else {
+            console.log(`❌ [LOGIN] Senha incorreta para o e-mail: '${email}'`);
             res.status(401).json({ erro: 'Email ou senha incorretos.' });
         }
     } catch (err) {
@@ -175,7 +183,9 @@ app.post('/api/login', async (req, res) => {
 // ==========================================
 app.post('/api/redefinir-senha', async (req, res) => {
     try {
-        const { email, novaSenha } = req.body;
+        const email = req.body.email ? req.body.email.trim().toLowerCase() : '';
+        const novaSenha = req.body.novaSenha ? req.body.novaSenha.trim() : '';
+
         if (!email || !novaSenha) {
             return res.status(400).json({ erro: 'E-mail e nova senha são obrigatórios.' });
         }
@@ -183,14 +193,23 @@ app.post('/api/redefinir-senha', async (req, res) => {
             return res.status(400).json({ erro: 'A senha deve conter no mínimo 8 caracteres.' });
         }
 
-        const [usuarios] = await db.query("SELECT codigo_usuario FROM usuarios WHERE email = ? LIMIT 1", [email]);
+        console.log(`🔄 [REDEFINIR SENHA] Solicitação para o e-mail: '${email}'`);
+
+        const [usuarios] = await db.query(
+            "SELECT codigo_usuario, email FROM usuarios WHERE LOWER(TRIM(email)) = ? LIMIT 1", 
+            [email]
+        );
+
         if (usuarios.length === 0) {
-            return res.status(404).json({ erro: 'Nenhuma conta encontrada com este e-mail.' });
+            console.log(`❌ [REDEFINIR SENHA] E-mail não encontrado no banco: '${email}'`);
+            return res.status(404).json({ erro: 'Nenhuma conta encontrada com este e-mail. Verifique a digitação.' });
         }
 
+        const usuarioEncontrado = usuarios[0];
         const hash = await bcrypt.hash(novaSenha, 10);
-        await db.query("UPDATE usuarios SET senha = ? WHERE email = ?", [hash, email]);
+        await db.query("UPDATE usuarios SET senha = ? WHERE codigo_usuario = ?", [hash, usuarioEncontrado.codigo_usuario]);
 
+        console.log(`✅ [REDEFINIR SENHA] Senha de '${usuarioEncontrado.email}' atualizada com sucesso no banco!`);
         res.status(200).json({ mensagem: 'Senha atualizada com sucesso!' });
     } catch (err) {
         console.error("Erro ao redefinir senha:", err);
@@ -819,4 +838,3 @@ app.delete('/api/admin/pedidos/concluidos', async (req, res) => {
 //npm install express mysql2 cors
 //node migrarProdutos.js (Apenas caso ja n tenha feito uma vez - Uma só vez é necessária)
 //node server.js
-

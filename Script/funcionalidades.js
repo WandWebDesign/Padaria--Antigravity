@@ -163,7 +163,7 @@ function fazerLogout() {
 
 // Lógica para transformar o link "Login" em "Sair" dinamicamente
 document.addEventListener('DOMContentLoaded', () => {
-    const linkLogin = document.querySelector('a[href="padaria-login.html"]');
+    const linkLogin = document.querySelector('a[href="padaria-login.html"]:not(.botao-fechar)');
     if (linkLogin && localStorage.getItem('usuarioLogado')) {
         linkLogin.innerText = 'Sair';
         linkLogin.href = '#';
@@ -229,7 +229,7 @@ function fazerLogout() {
 
 // Opcional: Função para verificar no header e mudar o texto de "Login" para "Sair"
 document.addEventListener('DOMContentLoaded', () => {
-    const linkLogin = document.querySelector('a[href="padaria-login.html"]');
+    const linkLogin = document.querySelector('a[href="padaria-login.html"]:not(.botao-fechar)');
     if (linkLogin && localStorage.getItem('usuarioLogado')) {
         linkLogin.innerText = 'Sair';
         linkLogin.href = '#';

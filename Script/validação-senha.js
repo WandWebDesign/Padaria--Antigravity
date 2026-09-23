@@ -12,30 +12,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const senha = document.getElementById('senha').value;
             const confirmarSenha = document.getElementById('confirmar-senha').value;
             const btnSubmit = form.querySelector('.btn-salvar');
+            const msgStatus = document.getElementById('mensagem-status');
+
+            function exibirMensagem(texto, isErro = false) {
+                if (msgStatus) {
+                    msgStatus.style.display = 'block';
+                    msgStatus.style.backgroundColor = isErro ? '#ffe6e6' : '#e6f7ea';
+                    msgStatus.style.color = isErro ? '#c0392b' : '#27ae60';
+                    msgStatus.style.border = isErro ? '1px solid #e74c3c' : '1px solid #2ecc71';
+                    msgStatus.innerText = texto;
+                }
+                if (typeof mostrarToast === 'function') {
+                    mostrarToast(texto);
+                } else if (isErro) {
+                    alert(texto);
+                }
+            }
 
             if (!email) {
-                if (typeof mostrarToast === 'function') mostrarToast('Informe o seu e-mail cadastrado.');
-                else alert('Informe o seu e-mail cadastrado.');
+                exibirMensagem('Informe o seu e-mail cadastrado.', true);
                 return;
             }
 
             // Validação 1: Tamanho mínimo
             if (senha.length < 8) {
-                if (typeof mostrarToast === 'function') {
-                    mostrarToast('A senha deve ter no mínimo 8 caracteres.');
-                } else {
-                    alert('A senha deve ter no mínimo 8 caracteres.');
-                }
+                exibirMensagem('A senha deve ter no mínimo 8 caracteres.', true);
                 return;
             }
 
             // Validação 2: Coincidência de senhas
             if (senha !== confirmarSenha) {
-                if (typeof mostrarToast === 'function') {
-                    mostrarToast('As senhas não coincidem. Verifique novamente.');
-                } else {
-                    alert('As senhas não coincidem.');
-                }
+                exibirMensagem('As senhas não coincidem. Verifique novamente.', true);
                 return;
             }
 
@@ -43,14 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const textoOriginal = btnSubmit ? btnSubmit.innerText : 'Salvar Nova Senha';
             if (btnSubmit) {
                 btnSubmit.disabled = true;
-                btnSubmit.innerText = 'Salvando...';
+                btnSubmit.innerText = '⏳ Salvando no banco...';
+                btnSubmit.style.cursor = 'not-allowed';
             }
 
             try {
                 const resposta = await fetch('/api/redefinir-senha', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: email, novaSenha: senha })
+                    body: JSON.stringify({ email: email.toLowerCase(), novaSenha: senha })
                 });
 
                 const dados = await resposta.json();
@@ -59,25 +67,23 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(dados.erro || 'Falha ao redefinir a senha.');
                 }
 
-                if (typeof mostrarToast === 'function') {
-                    mostrarToast('✅ Senha alterada com sucesso! Redirecionando...');
-                } else {
-                    alert('Senha alterada com sucesso!');
-                }
+                // Limpa qualquer sessão anterior do localStorage para permitir novo login limpo
+                localStorage.removeItem('usuarioLogado');
+                localStorage.removeItem('emailUsuario');
+                localStorage.removeItem('tipoUsuario');
+
+                exibirMensagem('✅ Senha alterada com sucesso! Redirecionando para o login...', false);
 
                 setTimeout(() => {
                     window.location.href = 'padaria-login.html';
-                }, 2000);
+                }, 2200);
 
             } catch (erro) {
-                if (typeof mostrarToast === 'function') {
-                    mostrarToast('❌ ' + erro.message);
-                } else {
-                    alert(erro.message);
-                }
+                exibirMensagem('❌ ' + erro.message, true);
                 if (btnSubmit) {
                     btnSubmit.disabled = false;
                     btnSubmit.innerText = textoOriginal;
+                    btnSubmit.style.cursor = 'pointer';
                 }
             }
         });

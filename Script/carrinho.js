@@ -238,7 +238,8 @@ function finalizarCompra(valorTotal, totalItens) {
     }
 
     // Envia o payload direto para a API Node
-    fetch('/api/pedidos', {
+    const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000';
+    fetch(`${API_BASE}/api/pedidos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(novoPedidoAdmin)

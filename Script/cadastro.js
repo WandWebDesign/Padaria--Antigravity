@@ -113,8 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Envio dos dados para a API Node.js (MySQL)
+            const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000';
             try {
-                const resposta = await fetch('/api/cadastro', {
+                const resposta = await fetch(`${API_BASE}/api/cadastro`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 

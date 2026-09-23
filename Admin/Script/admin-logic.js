@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const urlParams = new URLSearchParams(window.location.search);
     const setorDesejado = urlParams.get("setor");
+    configurarCalculadoraOferta();
     carregarCategoriasAdmin();
     carregarSetorAdmin(setorDesejado || setorAdminAtual);
 });
@@ -237,12 +238,94 @@ function removerFotoTemporaria(index) {
     renderizarPreviews();
 }
 
+function configurarCalculadoraOferta() {
+    const inputPreco = document.getElementById('prod-preco');
+    const inputDesconto = document.getElementById('prod-desconto-percentual');
+    const inputOferta = document.getElementById('prod-oferta');
+
+    if (!inputPreco || !inputDesconto || !inputOferta) return;
+
+    function parseValor(str) {
+        if (!str) return 0;
+        const limpo = str.toString().replace(/[^\d.,]/g, '').replace(',', '.');
+        return parseFloat(limpo) || 0;
+    }
+
+    function formatarValor(num) {
+        return num.toFixed(2).replace('.', ',');
+    }
+
+    // Digitou no campo de porcentagem de desconto
+    inputDesconto.addEventListener('input', () => {
+        const preco = parseValor(inputPreco.value);
+        const descTexto = inputDesconto.value.trim();
+
+        if (!descTexto) {
+            inputOferta.value = "";
+            return;
+        }
+
+        const desconto = parseFloat(descTexto);
+        if (preco > 0 && !isNaN(desconto) && desconto >= 0 && desconto < 100) {
+            const precoOferta = preco * (1 - (desconto / 100));
+            inputOferta.value = formatarValor(precoOferta);
+        } else if (desconto <= 0) {
+            inputOferta.value = "";
+        }
+    });
+
+    // Digitou no campo de preço de oferta
+    inputOferta.addEventListener('input', () => {
+        const preco = parseValor(inputPreco.value);
+        const ofertaTexto = inputOferta.value.trim();
+
+        if (!ofertaTexto) {
+            inputDesconto.value = "";
+            return;
+        }
+
+        const oferta = parseValor(ofertaTexto);
+        if (preco > 0 && oferta > 0 && oferta < preco) {
+            const perc = ((preco - oferta) / preco) * 100;
+            inputDesconto.value = (perc % 1 === 0) ? perc.toFixed(0) : perc.toFixed(1);
+        } else if (oferta >= preco) {
+            inputDesconto.value = "";
+        }
+    });
+
+    // Alterou o preço principal
+    inputPreco.addEventListener('input', () => {
+        const preco = parseValor(inputPreco.value);
+        const descTexto = inputDesconto.value.trim();
+        const ofertaTexto = inputOferta.value.trim();
+
+        if (preco > 0 && descTexto) {
+            const desconto = parseFloat(descTexto);
+            if (!isNaN(desconto) && desconto >= 0 && desconto < 100) {
+                const precoOferta = preco * (1 - (desconto / 100));
+                inputOferta.value = formatarValor(precoOferta);
+            }
+        } else if (preco > 0 && ofertaTexto) {
+            const oferta = parseValor(ofertaTexto);
+            if (oferta > 0 && oferta < preco) {
+                const perc = ((preco - oferta) / preco) * 100;
+                inputDesconto.value = (perc % 1 === 0) ? perc.toFixed(0) : perc.toFixed(1);
+            }
+        }
+    });
+}
+
 function abrirModalProduto() {
     document.getElementById('form-produto').reset();
     document.getElementById('prod-id').value = ""; 
     document.getElementById('modal-titulo').innerText = "Adicionar Novo Produto";
     document.getElementById('prod-setor').value = setorAdminAtual; 
     
+    const inputDesc = document.getElementById('prod-desconto-percentual');
+    if (inputDesc) inputDesc.value = "";
+    const inputOferta = document.getElementById('prod-oferta');
+    if (inputOferta) inputOferta.value = "";
+
     imagensTemporarias = [];
     imagensRemovidas = false;
     renderizarPreviews();
@@ -264,11 +347,25 @@ function abrirModalEditar(jsonProdutoCodificado) {
     const precoFormatado = parseFloat(prod.valor).toFixed(2).replace('.', ',');
     document.getElementById('prod-preco').value = precoFormatado;
     
-    if (prod.preco_oferta) {
-        const ofertaFormatada = parseFloat(prod.preco_oferta).toFixed(2).replace('.', ',');
+    const precoNum = parseFloat(prod.valor) || 0;
+    const inputDesc = document.getElementById('prod-desconto-percentual');
+
+    if (prod.preco_oferta && parseFloat(prod.preco_oferta) > 0) {
+        const ofertaNum = parseFloat(prod.preco_oferta);
+        const ofertaFormatada = ofertaNum.toFixed(2).replace('.', ',');
         document.getElementById('prod-oferta').value = ofertaFormatada;
+
+        if (inputDesc) {
+            if (precoNum > 0 && ofertaNum < precoNum) {
+                const perc = ((precoNum - ofertaNum) / precoNum) * 100;
+                inputDesc.value = (perc % 1 === 0) ? perc.toFixed(0) : perc.toFixed(1);
+            } else {
+                inputDesc.value = "";
+            }
+        }
     } else {
         document.getElementById('prod-oferta').value = "";
+        if (inputDesc) inputDesc.value = "";
     }
 
     if (prod.preco_custo) {

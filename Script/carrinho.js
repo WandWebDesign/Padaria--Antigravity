@@ -229,6 +229,14 @@ function finalizarCompra(valorTotal, totalItens) {
         pagamento: pagamentoEscolhido
     };
 
+    const btnFinalizar = document.querySelector('.btn-comprar-tudo');
+    const textoOriginalBtn = btnFinalizar ? btnFinalizar.innerText : 'Finalizar Compra';
+    if (btnFinalizar) {
+        btnFinalizar.disabled = true;
+        btnFinalizar.innerText = '⏳ Processando Pedido...';
+        btnFinalizar.style.cursor = 'not-allowed';
+    }
+
     // Envia o payload direto para a API Node
     fetch('/api/pedidos', {
         method: 'POST',
@@ -262,6 +270,11 @@ function finalizarCompra(valorTotal, totalItens) {
     .catch(erro => {
         console.error("Erro detalhado no checkout:", erro);
         alert("Erro ao processar compra: " + erro.message);
+        if (btnFinalizar) {
+            btnFinalizar.disabled = false;
+            btnFinalizar.innerText = textoOriginalBtn;
+            btnFinalizar.style.cursor = 'pointer';
+        }
     });
 }
 

@@ -21,9 +21,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const temaSalvo = localStorage.getItem('tema');
     if (temaSalvo === 'escuro') {
         document.body.classList.add('dark-mode');
-        document.getElementById('btn-tema').innerText = '☀️';
+        const botaoTema = document.getElementById('btn-tema');
+        if (botaoTema) botaoTema.innerText = '☀️';
     }
-    atualizarInterfaceCarrinho(); 
+    if (typeof atualizarInterfaceCarrinho === 'function') {
+        atualizarInterfaceCarrinho();
+    }
 });
 
 
@@ -49,7 +52,12 @@ function pesquisarProdutos() {
    3. NOTIFICAÇÕES (Toast)
 ========================================= */
 function mostrarToast(mensagem) {
-    const container = document.getElementById('toast-container');
+    let container = document.getElementById('toast-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'toast-container';
+        document.body.appendChild(container);
+    }
     const toast = document.createElement('div');
     toast.classList.add('toast');
     toast.innerText = mensagem;
@@ -60,7 +68,7 @@ function mostrarToast(mensagem) {
     setTimeout(() => {
         toast.classList.remove('mostrar');
         setTimeout(() => toast.remove(), 300); 
-    }, 3000);
+    }, 3500);
 }
 
 

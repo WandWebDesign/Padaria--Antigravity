@@ -17,8 +17,8 @@ async function buscarProduto(id) {
     if (!id) return null;
     
     try {
-        // Puxa a lista do banco de dados
-        const resposta = await fetch('/api/produtos');
+        const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000';
+        const resposta = await fetch(`${API_BASE}/api/produtos`);
         const produtos = await resposta.json();
         
         // Encontra exatamente o produto que tem o codigo_produto igual ao ID da URL

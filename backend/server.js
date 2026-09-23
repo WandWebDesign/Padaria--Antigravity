@@ -4,18 +4,26 @@ const mysql = require('mysql2/promise'); // Importante: usar a versão com /prom
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const sharp = require('sharp');
+const bcrypt = require('bcryptjs');
 
-// Configuração do Multer para armazenamento local
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, 'uploads'));
-    },
-    filename: function (req, file, cb) {
-        const extensao = file.originalname.split('.').pop();
-        cb(null, `produto_${Date.now()}_${Math.floor(Math.random() * 1000)}.${extensao}`);
-    }
-});
+// Configuração do Multer para armazenamento em memória (processamento com Sharp)
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+// Função utilitária para comprimir imagem para WebP ultraleve (Data URI)
+async function comprimirParaBase64(buffer) {
+    try {
+        const webpBuffer = await sharp(buffer)
+            .resize(500, 500, { fit: 'inside', withoutEnlargement: true })
+            .webp({ quality: 80 })
+            .toBuffer();
+        return `data:image/webp;base64,${webpBuffer.toString('base64')}`;
+    } catch (err) {
+        console.error('Erro ao comprimir imagem com sharp, usando buffer original:', err);
+        return `data:image/webp;base64,${buffer.toString('base64')}`;
+    }
+}
 
 const app = express();
 app.use(cors());
@@ -59,37 +67,134 @@ db.getConnection()
     .catch(err => console.error('Erro ao conectar:', err));
 
 // ==========================================
-// ROTA DE CADASTRO
+// ROTA DE CADASTRO (Com Transação e Hash Bcrypt)
 // ==========================================
 app.post('/api/cadastro', async (req, res) => {
+    let conn;
     try {
         const { nome, email, senha, telefone, cpf } = req.body;
-        const [result] = await db.query("INSERT INTO usuarios (email, senha, tipo_usuario) VALUES (?, ?, 'cliente')", [email, senha]);
+        if (!email || !senha || !nome) {
+            return res.status(400).json({ erro: 'Nome, e-mail e senha são obrigatórios.' });
+        }
+
+        conn = await db.getConnection();
+        await conn.beginTransaction();
+
+        // Verifica se o e-mail já existe
+        const [existe] = await conn.query("SELECT codigo_usuario FROM usuarios WHERE email = ? LIMIT 1", [email]);
+        if (existe.length > 0) {
+            await conn.rollback();
+            return res.status(409).json({ erro: 'Este e-mail já está cadastrado.' });
+        }
+
+        // Criptografa a senha com hash seguro
+        const hashSenha = await bcrypt.hash(senha, 10);
+
+        const [result] = await conn.query(
+            "INSERT INTO usuarios (email, senha, tipo_usuario) VALUES (?, ?, 'cliente')", 
+            [email, hashSenha]
+        );
         const codigo_usuario = result.insertId;
         
-        await db.query("INSERT INTO clientes (codigo_usuario, cpf, nome, telefone) VALUES (?, ?, ?, ?)", [codigo_usuario, cpf, nome, telefone]);
+        await conn.query(
+            "INSERT INTO clientes (codigo_usuario, cpf, nome, telefone) VALUES (?, ?, ?, ?)", 
+            [codigo_usuario, cpf || '', nome, telefone || '']
+        );
+
+        await conn.commit();
         res.status(201).json({ mensagem: 'Cadastro realizado com sucesso!' });
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ erro: 'Email já cadastrado ou erro no servidor.' });
+        if (conn) await conn.rollback();
+        console.error("Erro no cadastro:", err);
+        res.status(500).json({ erro: 'Erro ao processar o cadastro no servidor.' });
+    } finally {
+        if (conn) conn.release();
     }
 });
 
 // ==========================================
-// ROTA DE LOGIN
+// ROTA DE LOGIN (Suporte Híbrido: Bcrypt + Auto-migração)
 // ==========================================
 app.post('/api/login', async (req, res) => {
     try {
         const { email, senha } = req.body;
-        const [results] = await db.query("SELECT * FROM usuarios WHERE email = ? AND senha = ?", [email, senha]);
+        if (!email || !senha) {
+            return res.status(400).json({ erro: 'E-mail e senha são obrigatórios.' });
+        }
+
+        const [results] = await db.query(
+            `SELECT u.codigo_usuario, u.email, u.senha, u.tipo_usuario, c.nome 
+             FROM usuarios u 
+             LEFT JOIN clientes c ON u.codigo_usuario = c.codigo_usuario 
+             WHERE u.email = ? LIMIT 1`, 
+            [email]
+        );
         
-        if (results.length > 0) {
-            res.status(200).json({ mensagem: 'Login efetuado!', tipo_usuario: results[0].tipo_usuario });
+        if (results.length === 0) {
+            return res.status(401).json({ erro: 'Email ou senha incorretos.' });
+        }
+
+        const usuario = results[0];
+        let senhaValida = false;
+
+        // Se for um hash bcrypt
+        if (usuario.senha && (usuario.senha.startsWith('$2a$') || usuario.senha.startsWith('$2b$') || usuario.senha.startsWith('$2y$'))) {
+            senhaValida = await bcrypt.compare(senha, usuario.senha);
+        } else {
+            // Senha legada em texto plano
+            if (usuario.senha === senha) {
+                senhaValida = true;
+                // Migração transparente automática: gera hash e salva no banco!
+                try {
+                    const novoHash = await bcrypt.hash(senha, 10);
+                    await db.query("UPDATE usuarios SET senha = ? WHERE codigo_usuario = ?", [novoHash, usuario.codigo_usuario]);
+                } catch (eMigracao) {
+                    console.error("Falha ao migrar senha legada:", eMigracao);
+                }
+            }
+        }
+
+        if (senhaValida) {
+            res.status(200).json({ 
+                mensagem: 'Login efetuado!', 
+                tipo_usuario: usuario.tipo_usuario,
+                email: usuario.email,
+                nome: usuario.nome || usuario.email.split('@')[0]
+            });
         } else {
             res.status(401).json({ erro: 'Email ou senha incorretos.' });
         }
     } catch (err) {
+        console.error("Erro no login:", err);
         res.status(500).json({ erro: 'Erro no servidor' });
+    }
+});
+
+// ==========================================
+// ROTA DE REDEFINIÇÃO DE SENHA REAL
+// ==========================================
+app.post('/api/redefinir-senha', async (req, res) => {
+    try {
+        const { email, novaSenha } = req.body;
+        if (!email || !novaSenha) {
+            return res.status(400).json({ erro: 'E-mail e nova senha são obrigatórios.' });
+        }
+        if (novaSenha.length < 8) {
+            return res.status(400).json({ erro: 'A senha deve conter no mínimo 8 caracteres.' });
+        }
+
+        const [usuarios] = await db.query("SELECT codigo_usuario FROM usuarios WHERE email = ? LIMIT 1", [email]);
+        if (usuarios.length === 0) {
+            return res.status(404).json({ erro: 'Nenhuma conta encontrada com este e-mail.' });
+        }
+
+        const hash = await bcrypt.hash(novaSenha, 10);
+        await db.query("UPDATE usuarios SET senha = ? WHERE email = ?", [hash, email]);
+
+        res.status(200).json({ mensagem: 'Senha atualizada com sucesso!' });
+    } catch (err) {
+        console.error("Erro ao redefinir senha:", err);
+        res.status(500).json({ erro: 'Erro ao processar a redefinição de senha.' });
     }
 });
 
@@ -153,8 +258,8 @@ app.post('/api/produtos', upload.array('imagens', 5), async (req, res) => {
         const codigoProduto = resProd.insertId;
         if (req.files && req.files.length > 0) {
             for (let file of req.files) {
-                const url = `/uploads/${file.filename}`;
-                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [codigoProduto, url]);
+                const dataUri = await comprimirParaBase64(file.buffer);
+                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [codigoProduto, dataUri]);
             }
         }
         res.status(201).json({ mensagem: 'Sucesso!' });
@@ -178,8 +283,8 @@ app.put('/api/produtos/:id', upload.array('imagens', 5), async (req, res) => {
         if (req.files && req.files.length > 0) {
             await db.query('DELETE FROM imagens_produtos WHERE codigo_produto = ?', [req.params.id]);
             for (let file of req.files) {
-                const url = `/uploads/${file.filename}`;
-                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [req.params.id, url]);
+                const dataUri = await comprimirParaBase64(file.buffer);
+                await db.query('INSERT INTO imagens_produtos (codigo_produto, imagem_url) VALUES (?, ?)', [req.params.id, dataUri]);
             }
         } else if (req.body.remove_imagens === 'true') {
              // Caso o usuario tenha deletado a foto na interface
@@ -352,19 +457,41 @@ app.post('/api/pedidos', async (req, res) => {
         const idsPedidosGerados = [];
         let totalPagoGeral = 0;
 
-        // 3. Processa cada grupo como um pedido independente
+        // 3. Validação de Agendamento no Backend (Regra de Negócio: retirada a partir de amanhã, 07:30 às 20:00)
+        for (let chave in gruposPedidos) {
+            const grupo = gruposPedidos[chave];
+            if (!grupo.dataRetirada || !grupo.horaRetirada) {
+                throw new Error("Data e horário de retirada são obrigatórios para todos os itens.");
+            }
+            
+            const dataRetFormatada = converterDataParaMySQL(grupo.dataRetirada);
+            const hojeStr = new Date().toISOString().split('T')[0];
+            if (dataRetFormatada < hojeStr) {
+                throw new Error(`Data de retirada inválida (${grupo.dataRetirada}). Não é permitido agendar no passado.`);
+            }
+
+            const partesHora = grupo.horaRetirada.split(':');
+            const h = parseInt(partesHora[0], 10);
+            const m = parseInt(partesHora[1] || '0', 10);
+            const minDoDia = h * 60 + m;
+            if (minDoDia < (7 * 60 + 30) || minDoDia > (20 * 60)) {
+                throw new Error(`Horário de retirada ${grupo.horaRetirada} fora do expediente (07:30 às 20:00).`);
+            }
+        }
+
+        // 4. Processa cada grupo como um pedido independente
         for (let chave in gruposPedidos) {
             const grupo = gruposPedidos[chave];
             let totalCalculado = 0;
             const itensValidados = [];
 
-            // Valida itens, recalcula total e desconta estoque
+            // Valida itens, recalcula total e desconta estoque (com bloqueio FOR UPDATE)
             for (let item of grupo.itens) {
                 const nomeItem = item.nome || item.tituloproduto; 
                 const qtde = item.quantidade || 1;
 
                 const [buscaProduto] = await conexao.query(
-                    `SELECT codigo_produto, valor, preco_oferta, quantidade_estoque FROM produtos WHERE nome = ? LIMIT 1`, 
+                    `SELECT codigo_produto, valor, preco_oferta, quantidade_estoque FROM produtos WHERE nome = ? LIMIT 1 FOR UPDATE`, 
                     [nomeItem]
                 );
                 
@@ -504,31 +631,75 @@ app.get('/api/pedidos', async (req, res) => {
 });
 
 // =======================================================
-// 3. ROTA: ATUALIZAR STATUS E SALVAR JUSTIFICATIVA
+// 3. ROTA: ATUALIZAR STATUS, SALVAR JUSTIFICATIVA E ESTORNAR ESTOQUE
 // =======================================================
 app.put('/api/pedidos/:codigo/status', async (req, res) => {
     const { codigo } = req.params;
     const { status, justificativa } = req.body; 
 
+    let conexao;
     try {
-        let sql;
-        let parametros;
+        conexao = await db.getConnection();
+        await conexao.beginTransaction();
 
-        // Atualiza a situação, justificativa e carimbo de tempo exato (data_hora_atualizacao = NOW())
-        if (isNaN(codigo)) {
-            sql = `UPDATE pedidos SET situacao = ?, justificativa = ?, data_hora_atualizacao = NOW() WHERE codigo_retirada = ?`;
-            parametros = [status, justificativa || null, codigo];
-        } else {
-            sql = `UPDATE pedidos SET situacao = ?, justificativa = ?, data_hora_atualizacao = NOW() WHERE codigo_pedido = ?`;
-            parametros = [status, justificativa || null, codigo];
+        // 1. Busca o pedido atual para verificar o status anterior e obter o ID numérico
+        const campoBusca = isNaN(codigo) ? 'codigo_retirada' : 'codigo_pedido';
+        const [pedidos] = await conexao.query(
+            `SELECT codigo_pedido, situacao FROM pedidos WHERE ${campoBusca} = ? FOR UPDATE`,
+            [codigo]
+        );
+
+        if (pedidos.length === 0) {
+            await conexao.rollback();
+            return res.status(404).json({ erro: 'Pedido não encontrado.' });
         }
-        
-        await db.query(sql, parametros);
-        
+
+        const pedidoAtual = pedidos[0];
+        const statusAnterior = pedidoAtual.situacao;
+
+        // 2. Se o status está mudando para 'Cancelado' e NÃO estava cancelado antes: ESTORNA O ESTOQUE!
+        if (status === 'Cancelado' && statusAnterior !== 'Cancelado') {
+            const [itens] = await conexao.query(
+                `SELECT codigo_produto, quantidade FROM itens_pedidos WHERE codigo_pedido = ?`,
+                [pedidoAtual.codigo_pedido]
+            );
+
+            for (const item of itens) {
+                await conexao.query(
+                    `UPDATE produtos SET quantidade_estoque = quantidade_estoque + ? WHERE codigo_produto = ?`,
+                    [item.quantidade, item.codigo_produto]
+                );
+            }
+            console.log(`📦 [ESTOQUE ESTORNADO] Pedido #${pedidoAtual.codigo_pedido} cancelado. ${itens.length} itens devolvidos ao estoque.`);
+        } 
+        // Se por ventura um pedido cancelado for reativado
+        else if (statusAnterior === 'Cancelado' && status !== 'Cancelado') {
+            const [itens] = await conexao.query(
+                `SELECT codigo_produto, quantidade FROM itens_pedidos WHERE codigo_pedido = ?`,
+                [pedidoAtual.codigo_pedido]
+            );
+
+            for (const item of itens) {
+                await conexao.query(
+                    `UPDATE produtos SET quantidade_estoque = GREATEST(0, quantidade_estoque - ?) WHERE codigo_produto = ?`,
+                    [item.quantidade, item.codigo_produto]
+                );
+            }
+            console.log(`📦 [ESTOQUE DEBITADO] Pedido #${pedidoAtual.codigo_pedido} reativado.`);
+        }
+
+        // 3. Atualiza o status do pedido
+        const sql = `UPDATE pedidos SET situacao = ?, justificativa = ?, data_hora_atualizacao = NOW() WHERE codigo_pedido = ?`;
+        await conexao.query(sql, [status, justificativa || null, pedidoAtual.codigo_pedido]);
+
+        await conexao.commit();
         res.json({ mensagem: "Status do pedido modificado com sucesso!" });
     } catch (erro) {
+        if (conexao) await conexao.rollback();
         console.error("Erro ao atualizar status:", erro);
         res.status(500).json({ erro: erro.message });
+    } finally {
+        if (conexao) conexao.release();
     }
 });
 // =======================================================

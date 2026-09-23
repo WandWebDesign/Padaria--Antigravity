@@ -1,112 +1,249 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Pedidos</title>
+    <title>Padaria Diniz | O Sabor Artesanal da Região</title>
+
+    <link rel="stylesheet" href="CSS/landingstyle.css">
     <link rel="stylesheet" href="CSS/header.css">
-    <link rel="stylesheet" href="CSS/footer.css">
+    <link rel="stylesheet" href="CSS/cards.css">
     <link rel="stylesheet" href="CSS/funcionalidades.css">
-    <link rel="stylesheet" href="CSS/meus-pedidos.css">
+    <link rel="stylesheet" href="CSS/footer.css">
 </head>
+
 <body>
     <!-- ACESSIBILIDADE WCAG: Atalho para pular direto ao conteúdo principal -->
-    <a href="#conteudo-pedidos" class="skip-link sr-only">Pular para o histórico de pedidos</a>
+    <a href="#inicio" class="skip-link sr-only">Pular para o conteúdo principal</a>
 
     <header class="header" role="banner">
         <section>
             <div class="logo-e-marca">
-                <div class="marca"><a href="padaria-landinpage.html">Padaria Diniz</a></div>
-                <div class="logo"><a href="padaria-landinpage.html" class="logo img" aria-label="Ir para a página inicial da Padaria Diniz"><img src="./Imagens/Logo.png" alt="Logotipo da Padaria Diniz"></a></div>
+                <h1 class="sr-only">Padaria Diniz - O Sabor Artesanal da Região</h1>
+                <div class="marca">
+                    <a href="padaria-landinpage.html">Padaria Diniz</a>
+                </div>
+                <div class="logo">
+                    <a href="padaria-landinpage.html" class="logo img" aria-label="Ir para a página inicial da Padaria Diniz">
+                        <img src="./Imagens/Logo.png" alt="Logotipo da Padaria Diniz">
+                    </a>
+                </div>
             </div>
+
             <nav class="menu-principal" aria-label="Navegação principal">
+                <div class="busca-container">
+                    <label for="input-busca" class="sr-only">Buscar produtos no catálogo</label>
+                    <input type="text" id="input-busca" placeholder="Buscar produtos..." onkeyup="pesquisarProdutos()" aria-label="Buscar produtos no catálogo">
+                </div>
+                
                 <button id="btn-tema" onclick="alternarTema()" aria-label="Alternar tema claro e escuro">🌙</button>
                 <button id="btn-carrinho" onclick="abrirCarrinho()" aria-label="Abrir carrinho de compras: 0 itens adicionados">🛒(<span id="contador-carrinho">0</span>)</button>
 
                 <a href="meus-pedidos.html">Meus Pedidos</a>
                 <a href="pagina-produtos.html">Carrinho</a>
                 <a href="padaria-login.html">Login</a>
+                
             </nav>
         </section>
     </header>
 
-    <main class="main-historico">
-    <header class="historico-header">
-        <h1 class="titulo-sessao">Meus Pedidos</h1>
-        
-        <div class="box-regras-cancelamento">
-            <h3>📋 Regras para Cancelamento:</h3>
-            <ul>
-                <li><strong>Itens Simples (Pão Francês):</strong> Cancelamento permitido até 2 horas antes da retirada.</li>
-                <li><strong>Produtos Especiais (Bolos, Salgados, Frios):</strong> Cancelamento permitido até 12 horas antes da retirada.</li>
-            </ul>
-        </div>
-    </header>
-
-    <div class="filtro-status-container" style="margin: 20px auto; max-width: 800px; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <label for="filtro-status" style="font-weight: bold; color: #4A3B32;">Filtrar por Status:</label>
-        <select id="filtro-status" onchange="filtrarPedidos()" style="padding: 8px 15px; border-radius: 8px; border: 1px solid #A89F98; background-color: white; color: #4A3B32; font-size: 1rem; cursor: pointer;">
-            <option value="todos">Todos os Pedidos</option>
-            <option value="pendente">Pendente de Aprovação</option>
-            <option value="em produção">Em produção</option>
-            <option value="finalizado">Finalizado</option>
-            <option value="cancelado">Cancelado</option>
-        </select>
+    <div class="menu-categorias">
+        <ul class="escolhas">
+            <li><a href="pagina-catalogo.html?setor=frios"><img id="Frios" src="./Imagens Secundarias/Frios.svg" alt="Ícone Frios"><p>Frios</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=hortifruti"><img id="Hortifruti" src="./Imagens Secundarias/Hortifruti.svg" alt="Ícone Hortifruti"><p>Hortifruti</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=padaria"><img id="Padaria" src="./Imagens Secundarias/Pão.svg" alt="Ícone Pães"><p>Pães</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=laticinios"><img id="Laticinios" src="./Imagens Secundarias/Milk.svg" alt="Ícone Laticínios"><p>Laticínios</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=pets"><img id="Pets" src="./Imagens Secundarias/Pets.svg" alt="Ícone Pets"><p>Pets</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=doces"><img id="Doces" src="./Imagens Secundarias/Doces.svg" alt="Ícone Doces"><p>Doces</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=bebidas"><img id="Bebidas" src="./Imagens Secundarias/soda..svg" alt="Ícone Bebidas"><p>Bebidas</p></a></li>
+            <li><a href="pagina-catalogo.html?setor=limpeza"><img id="Limpeza" src="./Imagens Secundarias/Limpeza.svg" alt="Ícone Limpeza"><p>Limpeza/Higiene</p></a></li>
+        </ul>
     </div>
 
-    <div style="display: flex; gap: 10px;">
-        <button onclick="limparTodosFinalizados()" style="padding: 9px 15px; background-color: #A89F98; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.2s;">
-            🗑️ Limpar Concluídos
-        </button>
-        <button onclick="limparTodoHistorico()" style="padding: 9px 15px; background-color: #D9534F; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; font-size: 0.9rem; transition: 0.2s;">
-            ⚠️ Limpar Tudo
-        </button>
-    </div>
-</div>
-    <div id="container-historico">
+    <section class="iniciar" id="inicio">
+        <div class="banner-principal">
+            <h2>A PADARIA COM OS MELHORES PRODUTOS DA REGIÃO</h2>
+            <p>Experimente nossas receitas exclusivas que matam sua fome</p>
         </div>
-</main>
+    </section>
 
-<a href="https://web.whatsapp.com/" target="_blank" class="zap" aria-label="Fale conosco no WhatsApp">
+    <main id="conteudo-principal">
+        <div class="CTA">
+            <p class="frase-destaque">"Alguns dos nossos melhores produtos agora podem ser agendados: peça e retire no momento certo!"</p>
+        </div>
+
+        <section class="secao-peça-retire" aria-labelledby="titulo-peca-retire">
+            <div class="topo-cards">
+                <h2 id="titulo-peca-retire" class="titulo-secoes">Peça & Retire</h2>
+                <a href="pagina-catalogo.html?filtro=retiravel" aria-label="Ver todos os produtos disponíveis para retirar">Ver Disponíveis</a>
+            </div>
+
+            <div id="carrossel-peça-e-retire" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes" aria-label="Ver produtos anteriores">&lsaquo;</button>
+
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois" aria-label="Ver mais produtos">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="menu-central">
+            <h2>Descubra todos os nossos produtos</h2>
+            <div class="btn-setores">
+                <a id="padaria-icone" href="pagina-catalogo.html?setor=padaria" class="botao-produtos-padaria">Padaria</a>
+                <a id="açougue-icone" href="pagina-catalogo.html?setor=frios" class="botao-produtos-acougue">Açougue</a>
+                <a id="hortifruti-icone" href="pagina-catalogo.html?setor=hortifruti" class="botao-produtos-hortifruti">Hortifruti</a>
+                <a id="mercearia-icone" href="pagina-catalogo.html?setor=mercearia" class="botao-produtos-mercearia">Mercearia</a>
+            </div>
+        </section>
+
+        <section class="produto-ofertas" id="produto-ofertas">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Ofertas da Semana</h3>
+                <a href="pagina-catalogo.html?filtro=oferta">Ver Ofertas</a>
+            </div>
+
+            <div id="carrossel-ofertas" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                   
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-padaria" id="produto-padaria">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Padaria</h3>
+                <a href="pagina-catalogo.html?setor=padaria">Ver Padaria</a>
+            </div>
+
+            <div id="carrossel-padaria" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-açougue" id="produto-açougue">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Açougue/Frios</h3>
+                <a href="pagina-catalogo.html?setor=frios">Ver Açougue</a>
+            </div>
+
+            <div id="carrossel-açougue" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-hortifruti" id="produto-hortifruti">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Hortifruti</h3>
+                <a href="pagina-catalogo.html?setor=hortifruti">Ver Hortifruti</a>
+            </div>
+
+            <div id="carrossel-hortifruti" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+
+        <section class="produto-mercearia" id="produto-mercearia">
+            <div class="topo-cards">
+                <h3 class="titulo-secoes">Mercearia</h3>
+                <a href="pagina-catalogo.html?setor=mercearia">Ver Mercearia</a>
+            </div>
+
+            <div id="carrossel-mercearia" class="grid-produtos">
+                <button class="botao-carrossel antes botao-antes">&lsaquo;</button>
+                <div class="carrossel-conjunto">
+                    
+                </div>
+                <button class="botao-carrossel depois botao-depois">&rsaquo;</button>
+            </div>
+        </section>
+    </main>
+
+    <a href="https://web.whatsapp.com/" target="_blank" class="zap" aria-label="Fale conosco no WhatsApp">
         <img src="./Imagens Secundarias/whatsapp-icon-logo-svgrepo-com.svg" alt="ícone flutuante whatsapp">
     </a>
 
-<div id="modal-cancelamento" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div class="modal-box" style="background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center;">
-        <h2 style="color: #D9534F; margin-bottom: 15px;">⚠️ Cancelar Pedido?</h2>
-        <p style="color: #4A3B32; font-size: 1.1rem; margin-bottom: 10px;">Deseja realmente cancelar este pedido?</p>
-        <p style="color: #D9534F; font-weight: 800; text-transform: uppercase; font-size: 0.9rem;">Esta ação não pode ser desfeita.</p>
-        
-        <div style="display: flex; gap: 10px; margin-top: 25px;">
-            <button onclick="confirmarCancelamentoCliente()" id="btn-confirmar-cancelar" style="flex: 1; padding: 12px; background: #D9534F; color: white; border: none; border-radius: 50px; font-weight: 800; cursor: pointer;">Sim, Cancelar</button>
-            <button onclick="fecharModalCancelamento()" style="flex: 1; padding: 12px; background: #A89F98; color: white; border: none; border-radius: 50px; font-weight: 800; cursor: pointer;">Não, Voltar</button>
-        </div>
-    </div>
-</div>
 
-<div id="modal-limpar-historico" class="modal-overlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
-    <div class="modal-box" style="background: white; padding: 30px; border-radius: 20px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-        <h2 style="color: #D9534F; margin-bottom: 15px; font-size: 1.5rem;">🗑️ Limpar Histórico?</h2>
-        
-        <p id="texto-modal-limpar" style="color: #4A3B32; font-size: 1.1rem; margin-bottom: 5px; font-weight: bold;">
-            Deseja realmente remover os pedidos finalizados?
-        </p>
-        <p style="color: #A89F98; font-size: 0.9rem; margin-bottom: 25px;">Eles sumirão da sua lista permanentemente.</p>
-        
-        <div style="display: flex; gap: 10px; justify-content: center;">
-            <button onclick="fecharModalLimpar()" style="flex: 1; padding: 12px; background: #E0E0E0; color: #4A3B32; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s;">
-                Cancelar
-            </button>
-            <button id="btn-confirmar-limpar" style="flex: 1; padding: 12px; background: #D9534F; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s;">
-                Sim, Limpar
-            </button>
+    <div id="carrinho-overlay" class="carrinho-overlay" onclick="fecharCarrinho()"></div>
+    <aside id="carrinho-lateral" class="carrinho-oculto">
+        <div class="carrinho-header">
+            <h2>Seu Carrinho</h2>
+            <button onclick="fecharCarrinho()">Fechar ✖</button>
         </div>
-    </div>
-</div>
+        <div class="carrinho-itens" id="lista-carrinho">
+            </div>
+        <div class="carrinho-footer">
+            <h3>Total: R$ <span id="total-carrinho">0,00</span></h3>
+            <button class="btn-finalizar" onclick="window.location.href='pagina-produtos.html'">Finalizar Pedido</button>
+        </div>
+    </aside>
 
     <div id="toast-container"></div>
-    <script src="Script/funcionalidades.js"></script>
-    <script src="Script/meus-pedidos.js"></script>
+
+    <footer>
+        <div class="rodape-container">
+            <nav class="rodape-menu">
+                <h3>Navegue</h3>
+                <ul>
+                    <li><a href="meus-pedidos.html">Meus pedidos</a></li>
+                    <li><a href="pagina-catalogo.html?filtro=retiravel">Peça e Retire</a></li>
+                    <li><a href="pagina-catalogo.html?setor=padaria">Padaria</a></li>
+                    <li><a href="pagina-catalogo.html?setor=frios">Açougue</a></li>
+                    <li><a href="pagina-catalogo.html?setor=hortifruti">Hortifruti</a></li>
+                    <li><a href="pagina-catalogo.html?setor=mercearia">Mercearia</a></li>
+                </ul>
+            </nav>
+
+            <div class="rodape-sobre">
+                <h3>Sobre Nós</h3>
+                <ul>
+                    <li><a href="#">Localização</a></li>
+                    <li><a href="https://web.whatsapp.com/">WhatsApp</a></li>
+                </ul>
+            </div>
+
+            <div class="formulario-newsletter">
+                <h3>Receba Nossas Ofertas</h3>
+                <p>Cadastre-se para receber novidades!.</p>
+                <form>
+                    <label for="nome" class="sr-only">Seu nome:</label>
+                    <input id="nome" type="text" name="text" placeholder="Seu nome" required>
+
+                    <label for="tel" class="sr-only">Seu número de telefone:</label>
+                    <input id="tel" type="tel" name="tel" placeholder="Seu número (00) 12345-6789" required>
+
+                    <button id="cadastro" type="submit" aria-label="Cadastrar para receber novidades por e-mail e telefone">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="formas-pagamento">
+            <h3>Formas de Pagamento</h3>
+            <img src="https://cdn.shopify.com/s/files/1/0585/6372/3469/files/Copia_de_s_4_1024x1024.png?v=1667503757" alt="Formas de pagamento aceitas: cartões Visa, Mastercard, Elo e Pix">
+        </div>
+
+        <p id="copyright">Padaria Diniz &copy; 2026 - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="Script/script.js"></script> <!--Faz a barra suspensa-->
+    <script src="Script/carrocel.js"></script> <!--Faz animação do carrocel-->
+    <script src="Script/funcionalidades.js"></script> <!--Ativa modo Dark-->
+    <script src="Script/landing-dinamica.js"></script> <!--Preeche os carroceis-->
 </body>
 </html>

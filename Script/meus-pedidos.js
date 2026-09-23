@@ -6,7 +6,8 @@
    LÓGICA DA PÁGINA: MEUS PEDIDOS (CLIENTE - VIA BANCO DE DADOS)
 ======================================================= */
 
-let idDoPedidoParaCancelar = null; 
+let idDoPedidoParaCancelar = null;
+const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000') ? '' : 'http://localhost:3000'; 
 
 document.addEventListener('DOMContentLoaded', () => {
     renderizarHistorico();
@@ -22,7 +23,7 @@ async function confirmarCancelamentoCliente() {
 
     try {
         // Manda a requisição PUT para atualizar o status lá no MySQL
-        const resposta = await fetch(`/api/pedidos/${idDoPedidoParaCancelar}/status`, {
+        const resposta = await fetch(`${API_BASE}/api/pedidos/${idDoPedidoParaCancelar}/status`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'Cancelado', justificativa: 'Cancelado pelo cliente' }) 
@@ -68,7 +69,7 @@ async function renderizarHistorico() {
 
     try {
         // Busca diretamente da nova rota do Node.js
-        const resposta = await fetch(`/api/pedidos/cliente/${emailUsuario}`);
+        const resposta = await fetch(`${API_BASE}/api/pedidos/cliente/${emailUsuario}`);
         if (!resposta.ok) throw new Error('Erro na resposta do servidor');
         
         const historicoBD = await resposta.json();
@@ -198,7 +199,7 @@ async function limparTodosFinalizados() {
     if (!confirm("Tem certeza que deseja excluir todos os pedidos Finalizados e Cancelados do seu histórico?")) return;
 
     try {
-        const resposta = await fetch(`/api/pedidos/cliente/${emailUsuario}/concluidos`, {
+        const resposta = await fetch(`${API_BASE}/api/pedidos/cliente/${emailUsuario}/concluidos`, {
             method: 'DELETE'
         });
 
@@ -220,7 +221,7 @@ async function limparTodoHistorico() {
     if (!confirm("ATENÇÃO: Tem certeza que deseja apagar TODOS os seus pedidos? Esta ação não pode ser desfeita.")) return;
 
     try {
-        const resposta = await fetch(`/api/pedidos/cliente/${emailUsuario}/todos`, {
+        const resposta = await fetch(`${API_BASE}/api/pedidos/cliente/${emailUsuario}/todos`, {
             method: 'DELETE'
         });
 

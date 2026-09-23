@@ -819,3 +819,4 @@ app.delete('/api/admin/pedidos/concluidos', async (req, res) => {
 //npm install express mysql2 cors
 //node migrarProdutos.js (Apenas caso ja n tenha feito uma vez - Uma só vez é necessária)
 //node server.js
+

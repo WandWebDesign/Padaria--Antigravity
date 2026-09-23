@@ -65,8 +65,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 botaoLogin.disabled = true;
             }
 
+            // Suporta file://, Live Server (porta 5500) ou Node (porta 3000)
+            const API_BASE = (window.location.protocol === 'http:' && window.location.port === '3000')
+                ? ''
+                : 'http://localhost:3000';
+
             try {
-                const resposta = await fetch('/api/login', {
+                const resposta = await fetch(`${API_BASE}/api/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ email: email, senha: senha })
